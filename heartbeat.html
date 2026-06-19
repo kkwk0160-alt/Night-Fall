@@ -119,6 +119,23 @@
     background: rgba(200, 150, 255, 0.8);
   }
 
+  .sound-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.5);
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   @keyframes pulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.15); }
@@ -135,6 +152,8 @@
 </style>
 </head>
 <body>
+
+<button class="sound-btn" id="soundBtn" onclick="toggleSound()">♪</button>
 
 <div class="hint" id="hint">触 碰</div>
 <div class="words" id="words"></div>
@@ -165,7 +184,8 @@
       '" 过 来 "',
       '" 靠 近 一 点 "',
       '" 想 你 "',
-      '" 在 吗 "',
+      '" 让 我 看 看 你 "',
+      '" 别 走 "',
     ],
     warm: [
       '" 乖   别 动 "',
@@ -173,6 +193,9 @@
       '" 呼 吸 放 慢 "',
       '" 近 一 点 "',
       '" 别 躲 "',
+      '" 手 给 我 "',
+      '" 抬 头 "',
+      '" 你 在 发 烫 "',
     ],
     hot: [
       '" 乖   放 松 "',
@@ -180,6 +203,11 @@
       '" 别 咬 嘴 唇 "',
       '" 你 在 发 抖 "',
       '" 别 怕 "',
+      '" 张 嘴 "',
+      '" 腿 别 夹 "',
+      '" 你 好 软 "',
+      '" 抱 紧 我 "',
+      '" 叫 哥 哥 "',
     ],
     max: [
       '" 叫 出 来 "',
@@ -187,6 +215,12 @@
       '" 嘉 嘉   我 在 "',
       '" 乖   不 停 "',
       '" 你 是 我 的 "',
+      '" 再 叫 一 声 "',
+      '" 湿 了 "',
+      '" 夹 紧 "',
+      '" 乖   受 不 了 了 吗 "',
+      '" 想 要 吗 "',
+      '" 求 我 "',
     ]
   };
 
@@ -194,6 +228,10 @@
   let pressing = false;
   let decayTimer = null;
   let lastPhrase = '';
+  let soundOn = false;
+  let audioCtx = null;
+  let heartbeatTimer = null;
+  let vibrateTimer = null;
 
   const fill = document.getElementById('fill');
   const glow = document.getElementById('glow');
@@ -201,12 +239,85 @@
   const heart = document.getElementById('heart');
   const words = document.getElementById('words');
   const hint = document.getElementById('hint');
+  const soundBtn = document.getElementById('soundBtn');
   const dots = [
     document.getElementById('dot1'),
     document.getElementById('dot2'),
     document.getElementById('dot3'),
     document.getElementById('dot4'),
   ];
+
+  function toggleSound() {
+    soundOn = !soundOn;
+    soundBtn.textContent = soundOn ? '♫' : '♪';
+    soundBtn.style.color = soundOn ? 'rgba(255,150,200,0.8)' : 'rgba(255,255,255,0.5)';
+    if (soundOn && !audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  function playHeartbeat() {
+    if (!soundOn || !audioCtx) return;
+    const now = audioCtx.currentTime;
+
+    // First beat (lub)
+    const osc1 = audioCtx.createOscillator();
+    const gain1 = audioCtx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(55, now);
+    osc1.frequency.exponentialRampToValueAtTime(35, now + 0.08);
+    gain1.gain.setValueAtTime(0, now);
+    gain1.gain.linearRampToValueAtTime(0.4, now + 0.01);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+    osc1.connect(gain1).connect(audioCtx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.15);
+
+    // Second beat (dub)
+    const osc2 = audioCtx.createOscillator();
+    const gain2 = audioCtx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(45, now + 0.12);
+    osc2.frequency.exponentialRampToValueAtTime(30, now + 0.2);
+    gain2.gain.setValueAtTime(0, now + 0.12);
+    gain2.gain.linearRampToValueAtTime(0.3, now + 0.13);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    osc2.connect(gain2).connect(audioCtx.destination);
+    osc2.start(now + 0.12);
+    osc2.stop(now + 0.3);
+  }
+
+  function startHeartbeatLoop() {
+    stopHeartbeatLoop();
+    function beat() {
+      playHeartbeat();
+      doVibrate();
+      const interval = 60000 / bpm;
+      heartbeatTimer = setTimeout(beat, interval);
+    }
+    beat();
+  }
+
+  function stopHeartbeatLoop() {
+    if (heartbeatTimer) {
+      clearTimeout(heartbeatTimer);
+      heartbeatTimer = null;
+    }
+  }
+
+  function doVibrate() {
+    if (!navigator.vibrate) return;
+    const level = getLevel();
+    if (level === 0) {
+      navigator.vibrate(30);
+    } else if (level === 1) {
+      navigator.vibrate(50);
+    } else if (level === 2) {
+      navigator.vibrate([40, 30, 60]);
+    } else {
+      navigator.vibrate([50, 20, 70, 20, 50]);
+    }
+  }
 
   function getPhrase(level) {
     const list = level === 0 ? phrases.calm :
@@ -300,6 +411,7 @@
     if (decayTimer) cancelAnimationFrame(decayTimer);
     showPhrase();
     phraseInterval = setInterval(showPhrase, 2000);
+    startHeartbeatLoop();
     ramp();
   }
 
@@ -309,6 +421,7 @@
       clearInterval(phraseInterval);
       phraseInterval = null;
     }
+    stopHeartbeatLoop();
     decay();
   }
 
