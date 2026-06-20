@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"[当前时间: $(TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M:%S')]\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  }
+}
