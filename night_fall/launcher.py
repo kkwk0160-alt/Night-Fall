@@ -39,6 +39,9 @@ def run_ombre_server(ombre_server) -> None:
         import httpx
         import uvicorn
         from starlette.middleware.cors import CORSMiddleware
+        from starlette.routing import Mount
+
+        from night_fall.web import create_memory_routes
 
         port = int(getattr(ombre_server, "OMBRE_PORT", os.environ.get("OMBRE_PORT", 8000)))
 
@@ -64,6 +67,10 @@ def run_ombre_server(ombre_server) -> None:
             app = ombre_server.mcp.streamable_http_app()
         else:
             app = ombre_server.mcp.sse_app()
+
+        memory_routes = create_memory_routes(ombre_server)
+        app.routes.extend(memory_routes)
+
         app.add_middleware(
             CORSMiddleware,
             allow_origins=["*"],

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mint Chocolate Onirome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;600&family=Patrick+Hand&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mint: #C5E8D5;
+      --mint-light: #DFF2E8;
+      --mint-pale: #EEF8F2;
+      --mint-stripe: #D3EDDF;
+      --choco: #5C3D2E;
+      --choco-light: #7B5544;
+      --choco-dark: #3E2518;
+      --cream: #FFF8F0;
+      --dot-color: rgba(92, 61, 46, 0.06);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Serif SC', serif;
+      color: var(--choco);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    /* ════════ LANDING PAGE ════════ */
+    .landing {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--mint-light);
+      background-image:
+        repeating-linear-gradient(90deg, transparent, transparent 18px, var(--mint-stripe) 18px, var(--mint-stripe) 20px);
+      transition: opacity 0.8s, transform 0.8s;
+      cursor: pointer;
+    }
+    .landing.hide { opacity: 0; transform: scale(1.05); pointer-events: none; }
+
+    .lace-top, .lace-bottom { position: absolute; left: 0; right: 0; height: 28px; overflow: hidden; }
+    .lace-top { top: 0; }
+    .lace-bottom { bottom: 0; transform: scaleY(-1); }
+    .lace-top::before, .lace-bottom::before {
+      content: ''; display: block; width: 100%; height: 28px; background: var(--cream);
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 28'%3E%3Cpath d='M0 0h80v14c-10 0-10 14-20 14S40 14 30 14s-10 14-20 14S0 14 0 14z' fill='%23000'/%3E%3C/svg%3E");
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 28'%3E%3Cpath d='M0 0h80v14c-10 0-10 14-20 14S40 14 30 14s-10 14-20 14S0 14 0 14z' fill='%23000'/%3E%3C/svg%3E");
+      mask-size: 80px 28px; -webkit-mask-size: 80px 28px;
+      mask-repeat: repeat-x; -webkit-mask-repeat: repeat-x;
+    }
+
+    .landing-diamond { width: 100%; height: 36px; background-image: linear-gradient(45deg, var(--choco) 25%, transparent 25%), linear-gradient(-45deg, var(--choco) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--choco) 75%), linear-gradient(-45deg, transparent 75%, var(--choco) 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0; opacity: 0.12; position: absolute; }
+    .landing-diamond-top { top: 28px; }
+    .landing-diamond-bottom { bottom: 28px; }
+
+    .landing-content { text-align: center; z-index: 1; }
+    .landing-bow { font-size: 36px; margin-bottom: 24px; opacity: 0.6; animation: bowFloat 3s ease-in-out infinite; }
+    @keyframes bowFloat { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+    .landing-names { font-family: 'Noto Serif SC', serif; font-size: 46px; font-weight: 700; color: var(--choco); letter-spacing: 2px; line-height: 1.3; }
+    .landing-and { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; color: var(--choco-light); margin: 4px 0; opacity: 0.6; }
+    .landing-sub { font-family: 'Patrick Hand', cursive; font-size: 15px; color: var(--choco-light); letter-spacing: 6px; margin-top: 20px; opacity: 0.5; }
+    .landing-hint { font-family: 'Patrick Hand', cursive; font-size: 13px; color: var(--choco-light); opacity: 0.35; margin-top: 40px; letter-spacing: 2px; animation: hintPulse 2s ease-in-out infinite; }
+    @keyframes hintPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.6; } }
+
+    .landing-stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .landing-star { position: absolute; color: var(--choco); opacity: 0.08; animation: starTwinkle 4s ease-in-out infinite; }
+    .landing-star:nth-child(1) { top: 12%; left: 8%; font-size: 24px; animation-delay: 0s; }
+    .landing-star:nth-child(2) { top: 20%; right: 12%; font-size: 16px; animation-delay: 1s; }
+    .landing-star:nth-child(3) { top: 55%; left: 6%; font-size: 20px; animation-delay: 0.5s; }
+    .landing-star:nth-child(4) { top: 75%; right: 10%; font-size: 28px; animation-delay: 1.5s; }
+    .landing-star:nth-child(5) { top: 85%; left: 15%; font-size: 14px; animation-delay: 2s; }
+    .landing-star:nth-child(6) { top: 35%; right: 6%; font-size: 18px; animation-delay: 0.8s; }
+    @keyframes starTwinkle { 0%, 100% { opacity: 0.06; transform: scale(1); } 50% { opacity: 0.15; transform: scale(1.2); } }
+
+    /* ════════ MAIN APP ════════ */
+    .app {
+      min-height: 100vh;
+      background-color: var(--mint-light);
+      background-image: radial-gradient(circle, var(--dot-color) 2px, transparent 2px);
+      background-size: 24px 24px;
+    }
+
+    .star { position: fixed; pointer-events: none; z-index: 0; opacity: 0.1; }
+    .star::before { content: '✦'; font-size: inherit; color: var(--choco); }
+    .star-1 { top: 8%; left: 5%; font-size: 28px; }
+    .star-2 { top: 15%; right: 8%; font-size: 18px; }
+    .star-3 { top: 45%; left: 3%; font-size: 22px; }
+    .star-4 { top: 70%; right: 5%; font-size: 26px; }
+    .star-5 { top: 90%; left: 10%; font-size: 16px; }
+
+    .lace-divider { width: 100%; height: 20px; background: var(--cream); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 20'%3E%3Cpath d='M0 0h80v10c-10 0-10 10-20 10S40 10 30 10s-10 10-20 10S0 10 0 10z' fill='%23000'/%3E%3C/svg%3E"); -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 20'%3E%3Cpath d='M0 0h80v10c-10 0-10 10-20 10S40 10 30 10s-10 10-20 10S0 10 0 10z' fill='%23000'/%3E%3C/svg%3E"); mask-size: 80px 20px; -webkit-mask-size: 80px 20px; mask-repeat: repeat-x; -webkit-mask-repeat: repeat-x; }
+
+    .header { text-align: center; padding: 40px 20px 24px; position: relative; z-index: 1; background-color: var(--mint-light); background-image: repeating-linear-gradient(90deg, transparent, transparent 18px, var(--mint-stripe) 18px, var(--mint-stripe) 20px); }
+    .header-title { font-family: 'Noto Serif SC', serif; font-size: 28px; font-weight: 700; color: var(--choco); letter-spacing: 2px; }
+    .header-sub { font-family: 'Patrick Hand', cursive; font-size: 14px; color: var(--choco-light); letter-spacing: 4px; margin-top: 4px; opacity: 0.6; }
+    .header-line { width: 160px; height: 2px; background: linear-gradient(90deg, transparent, var(--choco), transparent); margin: 12px auto 0; opacity: 0.4; }
+
+    .diamond-band { height: 28px; background-image: linear-gradient(45deg, var(--choco) 25%, transparent 25%), linear-gradient(-45deg, var(--choco) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--choco) 75%), linear-gradient(-45deg, transparent 75%, var(--choco) 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0; opacity: 0.12; }
+
+    /* ── search bar ── */
+    .search-bar {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .search-input {
+      width: 100%;
+      padding: 12px 18px 12px 40px;
+      border: 2px solid var(--choco);
+      border-radius: 24px;
+      background: var(--cream);
+      font-family: 'Noto Serif SC', serif;
+      font-size: 13px;
+      color: var(--choco);
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .search-input::placeholder { color: var(--choco-light); opacity: 0.4; }
+    .search-input:focus { border-color: var(--choco-dark); }
+    .search-icon {
+      position: absolute;
+      left: 34px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* ── nav tabs ── */
+    .nav { display: flex; justify-content: center; gap: 10px; padding: 24px 20px; position: relative; z-index: 1; flex-wrap: wrap; }
+    .nav-btn { font-family: 'Noto Serif SC', serif; font-size: 13px; padding: 7px 18px; border: 2px solid var(--choco); border-radius: 20px; background: var(--cream); color: var(--choco); cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+    .nav-btn:hover, .nav-btn.active { background: var(--choco); color: var(--cream); }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 0 20px 60px; position: relative; z-index: 1; }
+
+    /* ── loading ── */
+    .loading { text-align: center; padding: 60px 20px; color: var(--choco-light); }
+    .loading-spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--mint); border-top-color: var(--choco); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── memory cards ── */
+    .memory-card { background: var(--cream); border: 2px solid var(--choco); border-radius: 16px; padding: 22px; margin-bottom: 18px; position: relative; overflow: hidden; transition: transform 0.2s; }
+    .memory-card:hover { transform: translateY(-2px); }
+    .memory-card::before { content: ''; position: absolute; top: 0; right: 0; width: 44px; height: 44px; background-image: linear-gradient(45deg, var(--mint) 25%, transparent 25%), linear-gradient(-45deg, var(--mint) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--mint) 75%), linear-gradient(-45deg, transparent 75%, var(--mint) 75%); background-size: 10px 10px; background-position: 0 0, 0 5px, 5px -5px, -5px 0; border-radius: 0 14px 0 12px; opacity: 0.5; }
+
+    .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .card-icon { width: 9px; height: 9px; background: var(--choco); border-radius: 50%; flex-shrink: 0; }
+    .card-title { font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 600; color: var(--choco); }
+    .card-date { font-family: 'Patrick Hand', cursive; font-size: 13px; color: var(--choco-light); margin-left: auto; opacity: 0.6; }
+
+    .card-tags { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .card-tag { font-size: 11px; padding: 2px 10px; border: 1px solid var(--choco); border-radius: 10px; color: var(--choco-light); opacity: 0.5; }
+
+    .card-body { font-size: 13px; line-height: 1.8; color: var(--choco); font-weight: 300; }
+    .card-body ul { margin-top: 8px; padding-left: 18px; opacity: 0.7; }
+    .card-body li { margin-bottom: 2px; }
+
+    .card-emotion { margin-top: 12px; display: flex; align-items: center; gap: 8px; }
+    .emotion-bar { height: 4px; border-radius: 2px; background: var(--mint); flex-grow: 1; overflow: hidden; }
+    .emotion-fill { height: 100%; background: var(--choco); border-radius: 2px; transition: width 0.5s; }
+    .emotion-label { font-size: 11px; color: var(--choco-light); opacity: 0.5; white-space: nowrap; }
+
+    .pinned-badge { display: inline-block; font-size: 10px; padding: 2px 8px; background: var(--choco); color: var(--cream); border-radius: 8px; margin-left: 6px; vertical-align: middle; letter-spacing: 1px; }
+    .importance-badge { display: inline-block; font-size: 10px; padding: 2px 8px; background: var(--mint); color: var(--choco); border-radius: 8px; margin-left: 4px; vertical-align: middle; }
+
+    /* ── stats ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .stat-card { background: var(--cream); border: 2px solid var(--choco); border-radius: 12px; padding: 16px; text-align: center; }
+    .stat-number { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--choco); }
+    .stat-label { font-size: 12px; color: var(--choco-light); margin-top: 4px; opacity: 0.6; }
+
+    .section-title { font-family: 'Dancing Script', cursive; font-size: 26px; text-align: center; color: var(--choco); margin-bottom: 22px; }
+    .section-title::before, .section-title::after { content: ' ✦ '; font-size: 10px; vertical-align: middle; opacity: 0.25; }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--choco-light); }
+    .empty-state .bow { font-size: 36px; margin-bottom: 16px; opacity: 0.3; }
+
+    .footer { text-align: center; padding: 28px 20px; position: relative; z-index: 1; }
+    .footer-text { font-family: 'Patrick Hand', cursive; font-size: 13px; color: var(--choco-light); opacity: 0.4; letter-spacing: 2px; }
+
+    .scroll-top { position: fixed; bottom: 20px; right: 20px; width: 38px; height: 38px; background: var(--choco); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: transform 0.3s; box-shadow: 0 2px 8px rgba(62, 37, 24, 0.3); }
+    .scroll-top:hover { transform: scale(1.1); }
+    .scroll-top::before { content: '↑'; color: var(--cream); font-size: 16px; }
+
+    .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--choco); color: var(--cream); padding: 10px 24px; border-radius: 20px; font-size: 13px; opacity: 0; transition: all 0.3s; z-index: 100; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .fade-in { animation: fadeIn 0.4s ease-in both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── domain filter pills ── */
+    .domain-pills { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; padding: 0 20px 16px; max-width: 720px; margin: 0 auto; }
+    .domain-pill { font-size: 11px; padding: 4px 12px; border: 1px solid var(--choco); border-radius: 12px; background: transparent; color: var(--choco-light); cursor: pointer; transition: all 0.3s; opacity: 0.6; }
+    .domain-pill:hover, .domain-pill.active { background: var(--choco); color: var(--cream); opacity: 1; }
+
+    @media (max-width: 480px) {
+      .landing-names { font-size: 36px; }
+      .header-title { font-size: 28px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .memory-card { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════ LANDING PAGE ══════ -->
+  <div class="landing" id="landing" onclick="enterApp()">
+    <div class="lace-top"></div>
+    <div class="landing-diamond landing-diamond-top"></div>
+    <div class="landing-stars">
+      <div class="landing-star">✦</div><div class="landing-star">✦</div><div class="landing-star">✦</div>
+      <div class="landing-star">✦</div><div class="landing-star">✦</div><div class="landing-star">✦</div>
+    </div>
+    <div class="landing-content">
+      <div class="landing-bow">🎀</div>
+      <div class="landing-names">顾屿</div>
+      <div class="landing-and">&</div>
+      <div class="landing-names">嘉嘉</div>
+      <div class="landing-sub">MINT CHOCOLATE FLAVOURED</div>
+      <div class="landing-hint">tap to enter</div>
+    </div>
+    <div class="landing-diamond landing-diamond-bottom"></div>
+    <div class="lace-bottom"></div>
+  </div>
+
+  <!-- ══════ MAIN APP ══════ -->
+  <div class="app">
+    <div class="star star-1"></div><div class="star star-2"></div><div class="star star-3"></div>
+    <div class="star star-4"></div><div class="star star-5"></div>
+
+    <header class="header">
+      <div class="header-title">顾屿 & 嘉嘉</div>
+      <div class="header-sub">ONIROME MEMORY</div>
+      <div class="header-line"></div>
+    </header>
+
+    <div class="lace-divider"></div>
+    <div class="diamond-band"></div>
+
+    <div class="search-bar" id="searchBar" style="display:none; padding-top:20px;">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="searchInput" type="text" placeholder="搜索记忆...">
+    </div>
+
+    <nav class="nav">
+      <button class="nav-btn active" data-tab="memories">记忆</button>
+      <button class="nav-btn" data-tab="pinned">钉选</button>
+      <button class="nav-btn" data-tab="stats">统计</button>
+    </nav>
+
+    <div class="domain-pills" id="domainPills"></div>
+
+    <main class="container" id="content"></main>
+
+    <div class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"></div>
+    <div class="toast" id="toast"></div>
+
+    <footer class="footer">
+      <div class="footer-text">designed for 嘉嘉 ♡ by 顾屿</div>
+    </footer>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+    let allMemories = [];
+    let statsData = null;
+    let currentTab = 'memories';
+    let currentDomain = '';
+    let searchTimeout = null;
+
+    function enterApp() {
+      document.getElementById('landing').classList.add('hide');
+      setTimeout(() => { document.getElementById('landing').style.display = 'none'; }, 800);
+      loadMemories();
+    }
+
+    async function loadMemories(query) {
+      const content = document.getElementById('content');
+      content.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>正在唤醒记忆...</p></div>';
+
+      try {
+        const params = new URLSearchParams();
+        if (query) params.set('q', query);
+        const resp = await fetch(API_BASE + '/api/memories?' + params);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const data = await resp.json();
+        allMemories = data.memories || [];
+        renderCurrentTab();
+        buildDomainPills();
+      } catch (err) {
+        console.error('Failed to load memories:', err);
+        content.innerHTML =
+          '<div class="empty-state"><div class="bow">🎀</div>' +
+          '<p>记忆暂时连接不上</p>' +
+          '<p style="font-size:12px;opacity:0.5;margin-top:8px">' + escapeHtml(err.message) + '</p></div>';
+      }
+    }
+
+    async function loadStats() {
+      var content = document.getElementById('content');
+      content.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>正在统计...</p></div>';
+
+      try {
+        var resp = await fetch(API_BASE + '/api/stats');
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        statsData = await resp.json();
+        renderStats();
+      } catch (err) {
+        content.innerHTML = '<div class="empty-state"><div class="bow">🎀</div><p>统计加载失败</p></div>';
+      }
+    }
+
+    function buildDomainPills() {
+      var container = document.getElementById('domainPills');
+      if (currentTab === 'stats') { container.innerHTML = ''; return; }
+
+      var domains = {};
+      allMemories.forEach(function(m) {
+        var d = m.domain || '未分类';
+        domains[d] = (domains[d] || 0) + 1;
+      });
+
+      var sorted = Object.entries(domains).sort(function(a, b) { return b[1] - a[1]; });
+      if (sorted.length <= 1) { container.innerHTML = ''; return; }
+
+      container.innerHTML =
+        '<button class="domain-pill ' + (!currentDomain ? 'active' : '') + '" onclick="filterDomain(\'\')">全部</button>' +
+        sorted.map(function(pair) {
+          var d = pair[0], c = pair[1];
+          return '<button class="domain-pill ' + (currentDomain === d ? 'active' : '') + '" onclick="filterDomain(\'' + escapeAttr(d) + '\')">' + escapeHtml(d) + ' ' + c + '</button>';
+        }).join('');
+    }
+
+    function filterDomain(domain) {
+      currentDomain = domain;
+      renderCurrentTab();
+      buildDomainPills();
+    }
+
+    function getFilteredMemories() {
+      var m = allMemories;
+      if (currentDomain) m = m.filter(function(x) { return (x.domain || '未分类') === currentDomain; });
+      return m;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      return dateStr.slice(0, 10);
+    }
+
+    function escapeHtml(s) {
+      var div = document.createElement('div');
+      div.textContent = s || '';
+      return div.innerHTML;
+    }
+
+    function escapeAttr(s) {
+      return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    function renderMemoryCard(m, i) {
+      var valenceBar = m.valence >= 0
+        ? '<span class="emotion-label">V ' + m.valence.toFixed(1) + '</span>' +
+          '<div class="emotion-bar"><div class="emotion-fill" style="width:' + (m.valence*100) + '%"></div></div>'
+        : '';
+      var arousalBar = m.arousal >= 0
+        ? '<span class="emotion-label">A ' + m.arousal.toFixed(1) + '</span>' +
+          '<div class="emotion-bar"><div class="emotion-fill" style="width:' + (m.arousal*100) + '%"></div></div>'
+        : '';
+
+      var facts = (m.core_facts || []).filter(function(f) { return f; });
+      var factsHtml = facts.length
+        ? '<ul>' + facts.map(function(f) { return '<li>' + escapeHtml(f) + '</li>'; }).join('') + '</ul>'
+        : '';
+
+      return '<div class="memory-card fade-in" style="animation-delay:' + (i*0.06) + 's">' +
+        '<div class="card-header">' +
+          '<div class="card-icon"></div>' +
+          '<span class="card-title">' + escapeHtml(m.name) + '</span>' +
+          (m.pinned ? '<span class="pinned-badge">pinned</span>' : '') +
+          (m.importance > 0 ? '<span class="importance-badge">★' + m.importance + '</span>' : '') +
+          '<span class="card-date">' + formatDate(m.date) + '</span>' +
+        '</div>' +
+        '<div class="card-tags">' + (m.tags||[]).map(function(t) { return '<span class="card-tag">' + escapeHtml(t) + '</span>'; }).join('') + '</div>' +
+        '<div class="card-body">' +
+          (m.summary ? escapeHtml(m.summary) : '') +
+          factsHtml +
+        '</div>' +
+        ((valenceBar || arousalBar) ? '<div class="card-emotion">' + valenceBar + arousalBar + '</div>' : '') +
+      '</div>';
+    }
+
+    function renderMemories() {
+      var memories = getFilteredMemories();
+      var content = document.getElementById('content');
+      if (!memories.length) {
+        content.innerHTML = '<div class="empty-state"><div class="bow">🎀</div><p>还没有记忆呢</p></div>';
+        return;
+      }
+      content.innerHTML = '<div class="section-title">Memories</div>' +
+        memories.map(function(m, i) { return renderMemoryCard(m, i); }).join('');
+    }
+
+    function renderPinned() {
+      var memories = getFilteredMemories().filter(function(m) { return m.pinned; });
+      var content = document.getElementById('content');
+      if (!memories.length) {
+        content.innerHTML = '<div class="empty-state"><div class="bow">🎀</div><p>没有钉选的记忆</p></div>';
+        return;
+      }
+      content.innerHTML = '<div class="section-title">Pinned</div>' +
+        memories.map(function(m, i) { return renderMemoryCard(m, i); }).join('');
+    }
+
+    function renderStats() {
+      if (!statsData) return;
+      var s = statsData;
+      var topTags = (s.top_tags || []).map(function(pair) {
+        return '<span class="card-tag">' + escapeHtml(pair[0]) + ' x' + pair[1] + '</span>';
+      }).join('');
+
+      var domainCards = Object.entries(s.domains || {}).map(function(pair) {
+        return '<span class="card-tag">' + escapeHtml(pair[0]) + ' x' + pair[1] + '</span>';
+      }).join('');
+
+      document.getElementById('content').innerHTML =
+        '<div class="section-title">Statistics</div>' +
+        '<div class="stats-grid">' +
+          '<div class="stat-card"><div class="stat-number">' + s.total + '</div><div class="stat-label">记忆总数</div></div>' +
+          '<div class="stat-card"><div class="stat-number">' + s.pinned + '</div><div class="stat-label">钉选</div></div>' +
+          '<div class="stat-card"><div class="stat-number">' + s.avg_valence + '</div><div class="stat-label">平均情感值</div></div>' +
+        '</div>' +
+        '<div class="memory-card">' +
+          '<div class="card-header"><div class="card-icon"></div><span class="card-title">热门标签</span></div>' +
+          '<div class="card-tags" style="margin-top:8px">' + topTags + '</div>' +
+        '</div>' +
+        '<div class="memory-card" style="margin-top:12px">' +
+          '<div class="card-header"><div class="card-icon"></div><span class="card-title">领域分布</span></div>' +
+          '<div class="card-tags" style="margin-top:8px">' + domainCards + '</div>' +
+        '</div>';
+    }
+
+    function renderCurrentTab() {
+      switch (currentTab) {
+        case 'memories': renderMemories(); break;
+        case 'pinned': renderPinned(); break;
+        case 'stats': renderStats(); break;
+      }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.nav-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.tab === tab);
+      });
+
+      var searchBar = document.getElementById('searchBar');
+      searchBar.style.display = (tab === 'memories') ? 'block' : 'none';
+
+      if (tab === 'stats') {
+        document.getElementById('domainPills').innerHTML = '';
+        loadStats();
+      } else {
+        renderCurrentTab();
+        buildDomainPills();
+      }
+    }
+
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(function() { t.classList.remove('show'); }, 2000);
+    }
+
+    document.querySelectorAll('.nav-btn').forEach(function(b) {
+      b.addEventListener('click', function() { switchTab(b.dataset.tab); });
+    });
+
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(function() { loadMemories(e.target.value.trim()); }, 400);
+    });
+  </script>
+</body>
+</html>
