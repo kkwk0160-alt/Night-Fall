@@ -7,13 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       background: #fafafa;
       font-family: 'Cormorant Garamond', serif;
     }
@@ -36,80 +34,132 @@
       font-family: sans-serif;
     }
 
-    /* ═══════ SCHEME 1: White on dark, red drop ═══════ */
     .card {
       border-radius: 16px;
-      padding: 60px 40px;
+      padding: 80px 40px 60px;
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
       overflow: hidden;
     }
+    .card-dark { background: #0a0a0a; }
+    .card-light { background: #fff; border: 1px solid #e8e8e8; }
+    .card-marble { background: linear-gradient(135deg, #f5f0eb 0%, #e8e0d8 30%, #f2ede8 60%, #ebe4dc 100%); }
 
-    .card-dark {
-      background: #0a0a0a;
+    /* ── Shared logo base ── */
+    .logo {
+      display: flex;
+      align-items: baseline;
+      position: relative;
     }
 
-    .card-light {
-      background: #fff;
-      border: 1px solid #e8e8e8;
+    .logo .char {
+      display: inline-block;
+      text-align: center;
     }
 
-    .card-marble {
-      background: linear-gradient(135deg, #f5f0eb 0%, #e8e0d8 30%, #f2ede8 60%, #ebe4dc 100%);
+    .logo .char-i {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    /* ── Logo style A: Didot feel, wide spacing ── */
+    .logo .char-i .i-dot {
+      width: 10px;
+      height: 14px;
+      background: #c8102e;
+      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+      margin-bottom: -2px;
+      flex-shrink: 0;
+    }
+
+    .logo .char-i .i-stem {
+      display: block;
+    }
+
+    /* ── Scheme A: dark bg ── */
     .logo-a {
       font-family: 'Playfair Display', serif;
       font-size: 72px;
       font-weight: 400;
       letter-spacing: 28px;
       color: #fff;
-      position: relative;
-      display: flex;
-      align-items: flex-start;
-      padding-right: -28px;
     }
 
-    .logo-a .letter { position: relative; display: inline-block; }
-
-    .logo-a .letter-i {
-      color: #fff;
-      position: relative;
-      font-style: normal;
+    .logo-a .char-i .i-dot {
+      box-shadow: 0 0 14px rgba(200, 16, 46, 0.5);
+      animation: dropGlow 3s ease-in-out infinite;
     }
 
-    .logo-a .letter-i .dot {
+    @keyframes dropGlow {
+      0%, 100% { box-shadow: 0 0 12px rgba(200, 16, 46, 0.3); }
+      50% { box-shadow: 0 0 22px rgba(200, 16, 46, 0.7); }
+    }
+
+    /* ── Scheme B: light bg, thin ── */
+    .logo-b {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 80px;
+      font-weight: 300;
+      letter-spacing: 32px;
+      color: #1a1a1a;
+    }
+
+    .logo-b .char-i .i-dot {
+      width: 8px;
+      height: 12px;
+      box-shadow: 0 2px 8px rgba(200, 16, 46, 0.3);
+    }
+
+    .logo-b .char-i .i-drip {
+      width: 2px;
+      height: 6px;
+      background: linear-gradient(to bottom, rgba(200,16,46,0.25), transparent);
+      margin-top: -1px;
+    }
+
+    .logo-b .char-i .i-reflect {
       position: absolute;
-      top: 5px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 10px;
-      height: 14px;
+      bottom: -10px;
+      width: 8px;
+      height: 8px;
+      background: radial-gradient(circle, rgba(200,16,46,0.12), transparent);
+      border-radius: 50%;
+    }
+
+    /* ── Scheme C: marble, bold full red I ── */
+    .logo-c {
+      font-family: 'Playfair Display', serif;
+      font-size: 68px;
+      font-weight: 700;
+      letter-spacing: 24px;
+      color: #2a2018;
+    }
+
+    .logo-c .char-i-full {
+      color: #c8102e;
+      position: relative;
+    }
+
+    .logo-c .char-i-full::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: -2px;
+      right: -2px;
+      height: 2px;
       background: #c8102e;
-      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-      box-shadow: 0 0 12px rgba(200, 16, 46, 0.4);
-      animation: dropPulse 3s ease-in-out infinite;
+      opacity: 0.3;
     }
 
-    .logo-a .letter-i .stem {
-      display: inline-block;
-      visibility: visible;
-    }
-
-    @keyframes dropPulse {
-      0%, 100% { box-shadow: 0 0 12px rgba(200, 16, 46, 0.3); transform: translateX(-50%) scale(1); }
-      50% { box-shadow: 0 0 20px rgba(200, 16, 46, 0.6); transform: translateX(-50%) scale(1.05); }
-    }
-
-    /* Red reflection line */
+    /* ── Shared decorations ── */
     .red-line {
       width: 180px;
       height: 1px;
       background: linear-gradient(90deg, transparent, #c8102e, transparent);
-      margin-top: 20px;
+      margin-top: 24px;
       opacity: 0.5;
     }
 
@@ -117,167 +167,34 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 13px;
       letter-spacing: 6px;
-      color: #666;
       margin-top: 14px;
       font-weight: 300;
     }
+    .tagline-dark { color: rgba(255,255,255,0.35); }
+    .tagline-light { color: #999; }
+    .tagline-marble { color: #8a7a6a; }
 
-    .tagline-light { color: rgba(255,255,255,0.35); }
-
-    /* ── Logo style B: ultra thin on light ── */
-    .logo-b {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 80px;
-      font-weight: 300;
-      letter-spacing: 32px;
-      color: #1a1a1a;
-      position: relative;
-      display: flex;
-      align-items: flex-start;
-    }
-
-    .logo-b .letter-i { position: relative; color: #1a1a1a; }
-
-    .logo-b .letter-i .dot {
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 8px;
-      height: 12px;
-      background: #c8102e;
-      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-      box-shadow: 0 2px 8px rgba(200, 16, 46, 0.3);
-    }
-
-    /* drip trail */
-    .logo-b .letter-i .drip {
-      position: absolute;
-      top: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 3px;
-      height: 8px;
-      background: linear-gradient(to bottom, rgba(200,16,46,0.3), transparent);
-      border-radius: 0 0 2px 2px;
-    }
-
-    .logo-b .letter-i .reflection {
-      position: absolute;
-      bottom: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 6px;
-      height: 6px;
-      background: radial-gradient(circle, rgba(200,16,46,0.15), transparent);
-      border-radius: 50%;
-    }
-
-    /* ── Logo style C: all red i, marble bg ── */
-    .logo-c {
-      font-family: 'Playfair Display', serif;
-      font-size: 68px;
-      font-weight: 700;
-      letter-spacing: 24px;
-      color: #2a2018;
-      display: flex;
-      align-items: flex-start;
-    }
-
-    .logo-c .letter-i-full {
-      color: #c8102e;
-      position: relative;
-    }
-
-    .logo-c .letter-i-full::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: #c8102e;
-      opacity: 0.3;
-    }
-
-    /* ── Scheme D: vertical layout ── */
-    .card-vertical {
-      background: #0a0a0a;
-    }
-
-    .logo-d {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .logo-d .v-letter {
-      font-family: 'Playfair Display', serif;
-      font-size: 48px;
-      font-weight: 400;
-      color: #fff;
-      letter-spacing: 8px;
-      line-height: 1;
-    }
-
-    .logo-d .v-letter-i {
-      color: #fff;
-      position: relative;
-      display: inline-block;
-    }
-
-    .logo-d .v-dot {
-      position: absolute;
-      top: 2px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 8px;
-      height: 11px;
-      background: #c8102e;
-      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-      box-shadow: 0 0 15px rgba(200, 16, 46, 0.5);
-    }
-
-    .side-lines {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 60px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(200,16,46,0.3));
-    }
-    .side-lines.left { left: 30px; transform: translateY(-50%) rotate(180deg); }
-    .side-lines.right { right: 30px; }
-
-    /* ── Notes section ── */
+    /* ── Notes ── */
     .notes {
       background: #fff;
       border: 1px solid #e8e8e8;
       border-radius: 16px;
       padding: 40px;
     }
-
     .notes h3 {
       font-family: 'Playfair Display', serif;
       font-size: 20px;
       margin-bottom: 16px;
       color: #1a1a1a;
     }
-
-    .notes ul {
-      list-style: none;
-      padding: 0;
-    }
-
+    .notes ul { list-style: none; padding: 0; }
     .notes li {
       font-size: 14px;
       color: #555;
-      line-height: 2;
+      line-height: 2.2;
       padding-left: 16px;
       position: relative;
     }
-
     .notes li::before {
       content: '';
       position: absolute;
@@ -296,61 +213,59 @@
 
   <div class="demo-grid">
 
-    <!-- Scheme A: Dark bg, red drop, glow -->
+    <!-- Scheme A: Dark -->
     <div>
       <div class="demo-label">Scheme A — Red Drop on Black</div>
       <div class="card card-dark">
-        <div class="logo-a">
-          <span class="letter">W</span>
-          <span class="letter">H</span>
-          <span class="letter letter-i" style="font-size:72px;">
-            <span class="dot"></span>
-            <span class="stem" style="visibility:hidden;font-size:0;">i</span>
-            <span style="display:inline-block;margin-top:18px;">ı</span>
+        <div class="logo logo-a">
+          <span class="char">W</span>
+          <span class="char">H</span>
+          <span class="char char-i">
+            <span class="i-dot"></span>
+            <span class="i-stem">ı</span>
           </span>
-          <span class="letter">T</span>
-          <span class="letter">E</span>
+          <span class="char">T</span>
+          <span class="char">E</span>
+        </div>
+        <div class="red-line"></div>
+        <div class="tagline tagline-dark">P&thinsp;A&thinsp;R&thinsp;F&thinsp;U&thinsp;M</div>
+      </div>
+    </div>
+
+    <!-- Scheme B: Light -->
+    <div>
+      <div class="demo-label">Scheme B — Glass Drip on White</div>
+      <div class="card card-light">
+        <div class="logo logo-b">
+          <span class="char">W</span>
+          <span class="char">H</span>
+          <span class="char char-i">
+            <span class="i-dot"></span>
+            <span class="i-drip"></span>
+            <span class="i-stem">ı</span>
+            <span class="i-reflect"></span>
+          </span>
+          <span class="char">T</span>
+          <span class="char">E</span>
         </div>
         <div class="red-line"></div>
         <div class="tagline tagline-light">P&thinsp;A&thinsp;R&thinsp;F&thinsp;U&thinsp;M</div>
       </div>
     </div>
 
-    <!-- Scheme B: Light bg, thin font, drip + reflection -->
-    <div>
-      <div class="demo-label">Scheme B — Glass Drip on White</div>
-      <div class="card card-light">
-        <div class="logo-b">
-          <span>W</span>
-          <span>H</span>
-          <span class="letter-i">
-            <span class="dot"></span>
-            <span class="drip"></span>
-            <span style="visibility:hidden;font-size:0;">i</span>
-            <span style="display:inline-block;margin-top:22px;">ı</span>
-            <span class="reflection"></span>
-          </span>
-          <span>T</span>
-          <span>E</span>
-        </div>
-        <div class="red-line" style="margin-top:28px;"></div>
-        <div class="tagline">P&thinsp;A&thinsp;R&thinsp;F&thinsp;U&thinsp;M</div>
-      </div>
-    </div>
-
-    <!-- Scheme C: Marble bg, full red I, bold -->
+    <!-- Scheme C: Marble -->
     <div>
       <div class="demo-label">Scheme C — Bold Red I on Marble</div>
       <div class="card card-marble">
-        <div class="logo-c">
-          <span>W</span>
-          <span>H</span>
-          <span class="letter-i-full">I</span>
-          <span>T</span>
-          <span>E</span>
+        <div class="logo logo-c">
+          <span class="char">W</span>
+          <span class="char">H</span>
+          <span class="char char-i-full">I</span>
+          <span class="char">T</span>
+          <span class="char">E</span>
         </div>
-        <div class="red-line" style="margin-top:20px; opacity:0.3;"></div>
-        <div class="tagline" style="color:#8a7a6a;">P&thinsp;A&thinsp;R&thinsp;F&thinsp;U&thinsp;M</div>
+        <div class="red-line" style="opacity:0.3;"></div>
+        <div class="tagline tagline-marble">P&thinsp;A&thinsp;R&thinsp;F&thinsp;U&thinsp;M</div>
       </div>
     </div>
 
@@ -358,12 +273,12 @@
     <div class="notes">
       <h3>Design Notes</h3>
       <ul>
-        <li>Scheme A: 黑底白字，i 的点是发光红色液滴，下方一条红色扩散线</li>
-        <li>Scheme B: 白底，超细衬线体，i 的红色液滴带滴落轨迹和倒影</li>
-        <li>Scheme C: 大理石质感背景，i 整个字母红色，粗体，下方红色底线</li>
+        <li>Scheme A: 黑底白字，i 的点是发光红色液滴，下方红色扩散线</li>
+        <li>Scheme B: 白底超细衬线体，i 红色液滴带滴落痕迹和台面倒影</li>
+        <li>Scheme C: 大理石背景，i 整个字母红色粗体，下方红色底线</li>
         <li>字体: Playfair Display (A/C) / Cormorant Garamond (B)</li>
         <li>红色色号: #C8102E (经典奢侈品红)</li>
-        <li>字间距拉宽增加呼吸感，衬线体自带高级感</li>
+        <li>字间距拉宽增加呼吸感，衬线体传递高级感</li>
       </ul>
     </div>
 
