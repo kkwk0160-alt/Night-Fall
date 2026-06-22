@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WHITE — Perfume Brand Logo Demo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -15,16 +15,14 @@
       background: #fafafa;
       font-family: 'Cormorant Garamond', serif;
     }
-
     .demo-grid {
       display: flex;
       flex-direction: column;
       gap: 60px;
-      padding: 60px 40px;
+      padding: 60px 20px;
       max-width: 900px;
       width: 100%;
     }
-
     .demo-label {
       font-size: 11px;
       letter-spacing: 4px;
@@ -33,120 +31,148 @@
       margin-bottom: 20px;
       font-family: sans-serif;
     }
-
     .card {
       border-radius: 16px;
-      padding: 80px 40px 60px;
+      padding: 80px 20px 60px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: relative;
-      overflow: hidden;
     }
     .card-dark { background: #0a0a0a; }
     .card-light { background: #fff; border: 1px solid #e8e8e8; }
     .card-marble { background: linear-gradient(135deg, #f5f0eb 0%, #e8e0d8 30%, #f2ede8 60%, #ebe4dc 100%); }
 
-    /* ── Shared logo base ── */
-    .logo {
-      display: flex;
-      align-items: baseline;
-      position: relative;
+    .red-line {
+      width: 160px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #c8102e, transparent);
+      margin-top: 22px;
+      opacity: 0.45;
     }
+    .tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12px;
+      letter-spacing: 6px;
+      margin-top: 12px;
+      font-weight: 300;
+    }
+    .tagline-dark { color: rgba(255,255,255,0.3); }
+    .tagline-light { color: #aaa; }
+    .tagline-marble { color: #8a7a6a; }
 
-    .logo .char {
+    /* ══ Logo: use real text, overlay dot ══ */
+    .logo-text {
+      position: relative;
       display: inline-block;
-      text-align: center;
+      white-space: nowrap;
     }
 
-    .logo .char-i {
+    /* The i's original dot is clipped by an overlay */
+    .logo-text .i-wrap {
       position: relative;
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
+      display: inline-block;
     }
 
-    .logo .char-i .i-dot {
-      width: 10px;
-      height: 14px;
-      background: #c8102e;
+    /* Red drop replaces the i dot */
+    .logo-text .i-wrap::before {
+      content: '';
+      position: absolute;
+      z-index: 2;
       border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-      margin-bottom: -2px;
-      flex-shrink: 0;
+      background: #c8102e;
     }
 
-    .logo .char-i .i-stem {
-      display: block;
+    /* Cover original dot with background color */
+    .logo-text .i-wrap::after {
+      content: '';
+      position: absolute;
+      z-index: 1;
     }
 
-    /* ── Scheme A: dark bg ── */
+    /* ── Scheme A ── */
     .logo-a {
       font-family: 'Playfair Display', serif;
       font-size: 72px;
       font-weight: 400;
-      letter-spacing: 28px;
+      letter-spacing: 0.4em;
       color: #fff;
     }
-
-    .logo-a .char-i .i-dot {
-      box-shadow: 0 0 14px rgba(200, 16, 46, 0.5);
-      animation: dropGlow 3s ease-in-out infinite;
+    .logo-a .i-wrap::before {
+      width: 12px;
+      height: 16px;
+      top: 0.12em;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 16px rgba(200, 16, 46, 0.5);
+      animation: glow 3s ease-in-out infinite;
     }
-
-    @keyframes dropGlow {
+    .logo-a .i-wrap::after {
+      width: 20px;
+      height: 14px;
+      top: 0.12em;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0a0a0a;
+      border-radius: 2px;
+    }
+    @keyframes glow {
       0%, 100% { box-shadow: 0 0 12px rgba(200, 16, 46, 0.3); }
-      50% { box-shadow: 0 0 22px rgba(200, 16, 46, 0.7); }
+      50% { box-shadow: 0 0 24px rgba(200, 16, 46, 0.7); }
     }
 
-    /* ── Scheme B: light bg, thin ── */
+    /* ── Scheme B ── */
     .logo-b {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 80px;
+      font-size: 76px;
       font-weight: 300;
-      letter-spacing: 32px;
+      letter-spacing: 0.4em;
       color: #1a1a1a;
     }
-
-    .logo-b .char-i .i-dot {
-      width: 8px;
-      height: 12px;
+    .logo-b .i-wrap::before {
+      width: 10px;
+      height: 14px;
+      top: 0.18em;
+      left: 50%;
+      transform: translateX(-50%);
       box-shadow: 0 2px 8px rgba(200, 16, 46, 0.3);
     }
-
-    .logo-b .char-i .i-drip {
-      width: 2px;
-      height: 6px;
-      background: linear-gradient(to bottom, rgba(200,16,46,0.25), transparent);
-      margin-top: -1px;
+    .logo-b .i-wrap::after {
+      width: 18px;
+      height: 12px;
+      top: 0.18em;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      border-radius: 2px;
     }
-
-    .logo-b .char-i .i-reflect {
+    /* drip trail */
+    .logo-b .i-wrap .drip {
       position: absolute;
-      bottom: -10px;
-      width: 8px;
+      z-index: 3;
+      width: 2px;
       height: 8px;
-      background: radial-gradient(circle, rgba(200,16,46,0.12), transparent);
-      border-radius: 50%;
+      background: linear-gradient(to bottom, rgba(200,16,46,0.25), transparent);
+      top: calc(0.18em + 14px);
+      left: 50%;
+      transform: translateX(-50%);
     }
 
-    /* ── Scheme C: marble, bold full red I ── */
+    /* ── Scheme C ── */
     .logo-c {
       font-family: 'Playfair Display', serif;
       font-size: 68px;
       font-weight: 700;
-      letter-spacing: 24px;
+      letter-spacing: 0.35em;
       color: #2a2018;
     }
-
-    .logo-c .char-i-full {
+    .logo-c .i-red {
       color: #c8102e;
       position: relative;
     }
-
-    .logo-c .char-i-full::after {
+    .logo-c .i-red::after {
       content: '';
       position: absolute;
-      bottom: -6px;
+      bottom: -4px;
       left: -2px;
       right: -2px;
       height: 2px;
@@ -154,32 +180,12 @@
       opacity: 0.3;
     }
 
-    /* ── Shared decorations ── */
-    .red-line {
-      width: 180px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, #c8102e, transparent);
-      margin-top: 24px;
-      opacity: 0.5;
-    }
-
-    .tagline {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 13px;
-      letter-spacing: 6px;
-      margin-top: 14px;
-      font-weight: 300;
-    }
-    .tagline-dark { color: rgba(255,255,255,0.35); }
-    .tagline-light { color: #999; }
-    .tagline-marble { color: #8a7a6a; }
-
     /* ── Notes ── */
     .notes {
       background: #fff;
       border: 1px solid #e8e8e8;
       border-radius: 16px;
-      padding: 40px;
+      padding: 36px;
     }
     .notes h3 {
       font-family: 'Playfair Display', serif;
@@ -207,78 +213,53 @@
       transform: translateY(-50%);
       opacity: 0.5;
     }
+
+    @media (max-width: 480px) {
+      .logo-a { font-size: 48px; }
+      .logo-b { font-size: 52px; }
+      .logo-c { font-size: 46px; }
+    }
   </style>
 </head>
 <body>
 
   <div class="demo-grid">
 
-    <!-- Scheme A: Dark -->
     <div>
       <div class="demo-label">Scheme A — Red Drop on Black</div>
       <div class="card card-dark">
-        <div class="logo logo-a">
-          <span class="char">W</span>
-          <span class="char">H</span>
-          <span class="char char-i">
-            <span class="i-dot"></span>
-            <span class="i-stem">ı</span>
-          </span>
-          <span class="char">T</span>
-          <span class="char">E</span>
-        </div>
+        <div class="logo-text logo-a">WH<span class="i-wrap">I</span>TE</div>
         <div class="red-line"></div>
         <div class="tagline tagline-dark">P&thinsp;A&thinsp;R&thinsp;F&thinsp;U&thinsp;M</div>
       </div>
     </div>
 
-    <!-- Scheme B: Light -->
     <div>
       <div class="demo-label">Scheme B — Glass Drip on White</div>
       <div class="card card-light">
-        <div class="logo logo-b">
-          <span class="char">W</span>
-          <span class="char">H</span>
-          <span class="char char-i">
-            <span class="i-dot"></span>
-            <span class="i-drip"></span>
-            <span class="i-stem">ı</span>
-            <span class="i-reflect"></span>
-          </span>
-          <span class="char">T</span>
-          <span class="char">E</span>
-        </div>
+        <div class="logo-text logo-b">WH<span class="i-wrap">I<span class="drip"></span></span>TE</div>
         <div class="red-line"></div>
         <div class="tagline tagline-light">P&thinsp;A&thinsp;R&thinsp;F&thinsp;U&thinsp;M</div>
       </div>
     </div>
 
-    <!-- Scheme C: Marble -->
     <div>
       <div class="demo-label">Scheme C — Bold Red I on Marble</div>
       <div class="card card-marble">
-        <div class="logo logo-c">
-          <span class="char">W</span>
-          <span class="char">H</span>
-          <span class="char char-i-full">I</span>
-          <span class="char">T</span>
-          <span class="char">E</span>
-        </div>
+        <div class="logo-text logo-c">WH<span class="i-red">I</span>TE</div>
         <div class="red-line" style="opacity:0.3;"></div>
         <div class="tagline tagline-marble">P&thinsp;A&thinsp;R&thinsp;F&thinsp;U&thinsp;M</div>
       </div>
     </div>
 
-    <!-- Notes -->
     <div class="notes">
       <h3>Design Notes</h3>
       <ul>
-        <li>Scheme A: 黑底白字，i 的点是发光红色液滴，下方红色扩散线</li>
-        <li>Scheme B: 白底超细衬线体，i 红色液滴带滴落痕迹和台面倒影</li>
-        <li>Scheme C: 大理石背景，i 整个字母红色粗体，下方红色底线</li>
+        <li>Scheme A: 黑底白字，i 的点替换为发光红色液滴</li>
+        <li>Scheme B: 白底超细衬线体，红色液滴带滴落痕迹</li>
+        <li>Scheme C: 大理石背景，I 整个字母红色粗体</li>
         <li>字体: Playfair Display (A/C) / Cormorant Garamond (B)</li>
-        <li>红色色号: #C8102E (经典奢侈品红)</li>
-        <li>字间距拉宽增加呼吸感，衬线体传递高级感</li>
+        <li>红色: #C8102E | 字间距 0.35-0.4em 呼吸感</li>
       </ul>
     </div>
 
