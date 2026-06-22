@@ -32,35 +32,25 @@
 
     /* ════════ LANDING PAGE ════════ */
     .landing {
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      position: fixed; inset: 0; z-index: 1000;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
       background-color: var(--mint-light);
-      background-image:
-        repeating-linear-gradient(90deg, transparent, transparent 18px, var(--mint-stripe) 18px, var(--mint-stripe) 20px);
-      transition: opacity 0.8s, transform 0.8s;
-      cursor: pointer;
+      background-image: repeating-linear-gradient(90deg, transparent, transparent 18px, var(--mint-stripe) 18px, var(--mint-stripe) 20px);
+      transition: opacity 0.8s, transform 0.8s; cursor: pointer;
     }
     .landing.hide { opacity: 0; transform: scale(1.05); pointer-events: none; }
 
     .lace-top, .lace-bottom { position: absolute; left: 0; right: 0; height: 28px; overflow: hidden; }
-    .lace-top { top: 0; }
-    .lace-bottom { bottom: 0; transform: scaleY(-1); }
+    .lace-top { top: 0; } .lace-bottom { bottom: 0; transform: scaleY(-1); }
     .lace-top::before, .lace-bottom::before {
       content: ''; display: block; width: 100%; height: 28px; background: var(--cream);
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 28'%3E%3Cpath d='M0 0h80v14c-10 0-10 14-20 14S40 14 30 14s-10 14-20 14S0 14 0 14z' fill='%23000'/%3E%3C/svg%3E");
       -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 28'%3E%3Cpath d='M0 0h80v14c-10 0-10 14-20 14S40 14 30 14s-10 14-20 14S0 14 0 14z' fill='%23000'/%3E%3C/svg%3E");
-      mask-size: 80px 28px; -webkit-mask-size: 80px 28px;
-      mask-repeat: repeat-x; -webkit-mask-repeat: repeat-x;
+      mask-size: 80px 28px; -webkit-mask-size: 80px 28px; mask-repeat: repeat-x; -webkit-mask-repeat: repeat-x;
     }
 
     .landing-diamond { width: 100%; height: 36px; background-image: linear-gradient(45deg, var(--choco) 25%, transparent 25%), linear-gradient(-45deg, var(--choco) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--choco) 75%), linear-gradient(-45deg, transparent 75%, var(--choco) 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0; opacity: 0.12; position: absolute; }
-    .landing-diamond-top { top: 28px; }
-    .landing-diamond-bottom { bottom: 28px; }
+    .landing-diamond-top { top: 28px; } .landing-diamond-bottom { bottom: 28px; }
 
     .landing-content { text-align: center; z-index: 1; }
     .landing-bow { font-size: 36px; margin-bottom: 24px; opacity: 0.6; animation: bowFloat 3s ease-in-out infinite; }
@@ -82,19 +72,12 @@
     @keyframes starTwinkle { 0%, 100% { opacity: 0.06; transform: scale(1); } 50% { opacity: 0.15; transform: scale(1.2); } }
 
     /* ════════ MAIN APP ════════ */
-    .app {
-      min-height: 100vh;
-      background-color: var(--mint-light);
-      background-image: radial-gradient(circle, var(--dot-color) 2px, transparent 2px);
-      background-size: 24px 24px;
-    }
+    .app { min-height: 100vh; background-color: var(--mint-light); background-image: radial-gradient(circle, var(--dot-color) 2px, transparent 2px); background-size: 24px 24px; }
 
     .star { position: fixed; pointer-events: none; z-index: 0; opacity: 0.1; }
     .star::before { content: '✦'; font-size: inherit; color: var(--choco); }
-    .star-1 { top: 8%; left: 5%; font-size: 28px; }
-    .star-2 { top: 15%; right: 8%; font-size: 18px; }
-    .star-3 { top: 45%; left: 3%; font-size: 22px; }
-    .star-4 { top: 70%; right: 5%; font-size: 26px; }
+    .star-1 { top: 8%; left: 5%; font-size: 28px; } .star-2 { top: 15%; right: 8%; font-size: 18px; }
+    .star-3 { top: 45%; left: 3%; font-size: 22px; } .star-4 { top: 70%; right: 5%; font-size: 26px; }
     .star-5 { top: 90%; left: 10%; font-size: 16px; }
 
     .lace-divider { width: 100%; height: 20px; background: var(--cream); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 20'%3E%3Cpath d='M0 0h80v10c-10 0-10 10-20 10S40 10 30 10s-10 10-20 10S0 10 0 10z' fill='%23000'/%3E%3C/svg%3E"); -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 20'%3E%3Cpath d='M0 0h80v10c-10 0-10 10-20 10S40 10 30 10s-10 10-20 10S0 10 0 10z' fill='%23000'/%3E%3C/svg%3E"); mask-size: 80px 20px; -webkit-mask-size: 80px 20px; mask-repeat: repeat-x; -webkit-mask-repeat: repeat-x; }
@@ -106,51 +89,22 @@
 
     .diamond-band { height: 28px; background-image: linear-gradient(45deg, var(--choco) 25%, transparent 25%), linear-gradient(-45deg, var(--choco) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--choco) 75%), linear-gradient(-45deg, transparent 75%, var(--choco) 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0; opacity: 0.12; }
 
-    /* ── search bar ── */
-    .search-bar {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 0 20px;
-      position: relative;
-      z-index: 1;
-    }
-    .search-input {
-      width: 100%;
-      padding: 12px 18px 12px 40px;
-      border: 2px solid var(--choco);
-      border-radius: 24px;
-      background: var(--cream);
-      font-family: 'Noto Serif SC', serif;
-      font-size: 13px;
-      color: var(--choco);
-      outline: none;
-      transition: border-color 0.3s;
-    }
+    .search-bar { max-width: 720px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+    .search-input { width: 100%; padding: 12px 18px 12px 40px; border: 2px solid var(--choco); border-radius: 24px; background: var(--cream); font-family: 'Noto Serif SC', serif; font-size: 13px; color: var(--choco); outline: none; transition: border-color 0.3s; }
     .search-input::placeholder { color: var(--choco-light); opacity: 0.4; }
     .search-input:focus { border-color: var(--choco-dark); }
-    .search-icon {
-      position: absolute;
-      left: 34px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 14px;
-      opacity: 0.4;
-      pointer-events: none;
-    }
+    .search-icon { position: absolute; left: 34px; top: 50%; transform: translateY(-50%); font-size: 14px; opacity: 0.4; pointer-events: none; }
 
-    /* ── nav tabs ── */
     .nav { display: flex; justify-content: center; gap: 10px; padding: 24px 20px; position: relative; z-index: 1; flex-wrap: wrap; }
     .nav-btn { font-family: 'Noto Serif SC', serif; font-size: 13px; padding: 7px 18px; border: 2px solid var(--choco); border-radius: 20px; background: var(--cream); color: var(--choco); cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
     .nav-btn:hover, .nav-btn.active { background: var(--choco); color: var(--cream); }
 
     .container { max-width: 720px; margin: 0 auto; padding: 0 20px 60px; position: relative; z-index: 1; }
 
-    /* ── loading ── */
     .loading { text-align: center; padding: 60px 20px; color: var(--choco-light); }
     .loading-spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--mint); border-top-color: var(--choco); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── memory cards ── */
     .memory-card { background: var(--cream); border: 2px solid var(--choco); border-radius: 16px; padding: 22px; margin-bottom: 18px; position: relative; overflow: hidden; transition: transform 0.2s; }
     .memory-card:hover { transform: translateY(-2px); }
     .memory-card::before { content: ''; position: absolute; top: 0; right: 0; width: 44px; height: 44px; background-image: linear-gradient(45deg, var(--mint) 25%, transparent 25%), linear-gradient(-45deg, var(--mint) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--mint) 75%), linear-gradient(-45deg, transparent 75%, var(--mint) 75%); background-size: 10px 10px; background-position: 0 0, 0 5px, 5px -5px, -5px 0; border-radius: 0 14px 0 12px; opacity: 0.5; }
@@ -164,8 +118,6 @@
     .card-tag { font-size: 11px; padding: 2px 10px; border: 1px solid var(--choco); border-radius: 10px; color: var(--choco-light); opacity: 0.5; }
 
     .card-body { font-size: 13px; line-height: 1.8; color: var(--choco); font-weight: 300; }
-    .card-body ul { margin-top: 8px; padding-left: 18px; opacity: 0.7; }
-    .card-body li { margin-bottom: 2px; }
 
     .card-emotion { margin-top: 12px; display: flex; align-items: center; gap: 8px; }
     .emotion-bar { height: 4px; border-radius: 2px; background: var(--mint); flex-grow: 1; overflow: hidden; }
@@ -175,7 +127,6 @@
     .pinned-badge { display: inline-block; font-size: 10px; padding: 2px 8px; background: var(--choco); color: var(--cream); border-radius: 8px; margin-left: 6px; vertical-align: middle; letter-spacing: 1px; }
     .importance-badge { display: inline-block; font-size: 10px; padding: 2px 8px; background: var(--mint); color: var(--choco); border-radius: 8px; margin-left: 4px; vertical-align: middle; }
 
-    /* ── stats ── */
     .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
     .stat-card { background: var(--cream); border: 2px solid var(--choco); border-radius: 12px; padding: 16px; text-align: center; }
     .stat-number { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--choco); }
@@ -186,6 +137,13 @@
 
     .empty-state { text-align: center; padding: 60px 20px; color: var(--choco-light); }
     .empty-state .bow { font-size: 36px; margin-bottom: 16px; opacity: 0.3; }
+
+    .auth-prompt { text-align: center; padding: 40px 20px; }
+    .auth-prompt a { color: var(--choco); text-decoration: underline; }
+
+    .domain-pills { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; padding: 0 20px 16px; max-width: 720px; margin: 0 auto; }
+    .domain-pill { font-size: 11px; padding: 4px 12px; border: 1px solid var(--choco); border-radius: 12px; background: transparent; color: var(--choco-light); cursor: pointer; transition: all 0.3s; opacity: 0.6; }
+    .domain-pill:hover, .domain-pill.active { background: var(--choco); color: var(--cream); opacity: 1; }
 
     .footer { text-align: center; padding: 28px 20px; position: relative; z-index: 1; }
     .footer-text { font-family: 'Patrick Hand', cursive; font-size: 13px; color: var(--choco-light); opacity: 0.4; letter-spacing: 2px; }
@@ -200,11 +158,6 @@
     .fade-in { animation: fadeIn 0.4s ease-in both; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ── domain filter pills ── */
-    .domain-pills { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; padding: 0 20px 16px; max-width: 720px; margin: 0 auto; }
-    .domain-pill { font-size: 11px; padding: 4px 12px; border: 1px solid var(--choco); border-radius: 12px; background: transparent; color: var(--choco-light); cursor: pointer; transition: all 0.3s; opacity: 0.6; }
-    .domain-pill:hover, .domain-pill.active { background: var(--choco); color: var(--cream); opacity: 1; }
-
     @media (max-width: 480px) {
       .landing-names { font-size: 36px; }
       .header-title { font-size: 28px; }
@@ -215,7 +168,6 @@
 </head>
 <body>
 
-  <!-- ══════ LANDING PAGE ══════ -->
   <div class="landing" id="landing" onclick="enterApp()">
     <div class="lace-top"></div>
     <div class="landing-diamond landing-diamond-top"></div>
@@ -226,7 +178,7 @@
     <div class="landing-content">
       <div class="landing-bow">🎀</div>
       <div class="landing-names">顾屿</div>
-      <div class="landing-and">&</div>
+      <div class="landing-and">&amp;</div>
       <div class="landing-names">嘉嘉</div>
       <div class="landing-sub">MINT CHOCOLATE FLAVOURED</div>
       <div class="landing-hint">tap to enter</div>
@@ -235,13 +187,12 @@
     <div class="lace-bottom"></div>
   </div>
 
-  <!-- ══════ MAIN APP ══════ -->
   <div class="app">
     <div class="star star-1"></div><div class="star star-2"></div><div class="star star-3"></div>
     <div class="star star-4"></div><div class="star star-5"></div>
 
     <header class="header">
-      <div class="header-title">顾屿 & 嘉嘉</div>
+      <div class="header-title">顾屿 &amp; 嘉嘉</div>
       <div class="header-sub">ONIROME MEMORY</div>
       <div class="header-line"></div>
     </header>
@@ -261,7 +212,6 @@
     </nav>
 
     <div class="domain-pills" id="domainPills"></div>
-
     <main class="container" id="content"></main>
 
     <div class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"></div>
@@ -273,52 +223,64 @@
   </div>
 
   <script>
-    const API_BASE = window.location.origin;
-    let allMemories = [];
-    let statsData = null;
-    let currentTab = 'memories';
-    let currentDomain = '';
-    let searchTimeout = null;
+    var allMemories = [];
+    var currentTab = 'memories';
+    var currentDomain = '';
+    var searchTimeout = null;
 
     function enterApp() {
       document.getElementById('landing').classList.add('hide');
-      setTimeout(() => { document.getElementById('landing').style.display = 'none'; }, 800);
+      setTimeout(function() { document.getElementById('landing').style.display = 'none'; }, 800);
       loadMemories();
     }
 
     async function loadMemories(query) {
-      const content = document.getElementById('content');
+      var content = document.getElementById('content');
       content.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>正在唤醒记忆...</p></div>';
 
       try {
-        const params = new URLSearchParams();
-        if (query) params.set('q', query);
-        const resp = await fetch(API_BASE + '/api/memories?' + params);
+        var url = query ? '/api/search?q=' + encodeURIComponent(query) : '/api/buckets';
+        var resp = await fetch(url, { credentials: 'include' });
+
+        if (resp.status === 401 || resp.status === 403) {
+          content.innerHTML = '<div class="auth-prompt"><div style="font-size:36px;margin-bottom:16px;opacity:0.3">🎀</div>' +
+            '<p>需要先登录</p><p style="margin-top:12px"><a href="/dashboard">去 Dashboard 登录</a></p></div>';
+          return;
+        }
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        const data = await resp.json();
-        allMemories = data.memories || [];
+
+        var data = await resp.json();
+        var buckets = Array.isArray(data) ? data : (data.results || data.buckets || []);
+
+        allMemories = buckets.map(function(b) {
+          var domain = b.domain || [];
+          if (typeof domain === 'string') domain = [domain];
+          var tags = b.tags || [];
+          if (typeof tags === 'string') tags = tags.split(',').map(function(t) { return t.trim(); });
+
+          return {
+            id: b.id || '',
+            name: b.name || b.id || '',
+            domain: domain.join(', ') || '未分类',
+            tags: tags,
+            valence: typeof b.valence === 'number' ? b.valence : -1,
+            arousal: typeof b.arousal === 'number' ? b.arousal : -1,
+            pinned: !!b.pinned,
+            importance: b.importance || 0,
+            date: b.last_active || b.created || '',
+            summary: b.content_preview || '',
+            type: b.type || 'dynamic',
+            score: b.score || 0
+          };
+        });
+
         renderCurrentTab();
         buildDomainPills();
       } catch (err) {
         console.error('Failed to load memories:', err);
-        content.innerHTML =
-          '<div class="empty-state"><div class="bow">🎀</div>' +
+        content.innerHTML = '<div class="empty-state"><div class="bow">🎀</div>' +
           '<p>记忆暂时连接不上</p>' +
           '<p style="font-size:12px;opacity:0.5;margin-top:8px">' + escapeHtml(err.message) + '</p></div>';
-      }
-    }
-
-    async function loadStats() {
-      var content = document.getElementById('content');
-      content.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>正在统计...</p></div>';
-
-      try {
-        var resp = await fetch(API_BASE + '/api/stats');
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        statsData = await resp.json();
-        renderStats();
-      } catch (err) {
-        content.innerHTML = '<div class="empty-state"><div class="bow">🎀</div><p>统计加载失败</p></div>';
       }
     }
 
@@ -351,7 +313,7 @@
 
     function getFilteredMemories() {
       var m = allMemories;
-      if (currentDomain) m = m.filter(function(x) { return (x.domain || '未分类') === currentDomain; });
+      if (currentDomain) m = m.filter(function(x) { return x.domain === currentDomain; });
       return m;
     }
 
@@ -373,31 +335,23 @@
     function renderMemoryCard(m, i) {
       var valenceBar = m.valence >= 0
         ? '<span class="emotion-label">V ' + m.valence.toFixed(1) + '</span>' +
-          '<div class="emotion-bar"><div class="emotion-fill" style="width:' + (m.valence*100) + '%"></div></div>'
+          '<div class="emotion-bar"><div class="emotion-fill" style="width:' + (m.valence * 100) + '%"></div></div>'
         : '';
       var arousalBar = m.arousal >= 0
         ? '<span class="emotion-label">A ' + m.arousal.toFixed(1) + '</span>' +
-          '<div class="emotion-bar"><div class="emotion-fill" style="width:' + (m.arousal*100) + '%"></div></div>'
+          '<div class="emotion-bar"><div class="emotion-fill" style="width:' + (m.arousal * 100) + '%"></div></div>'
         : '';
 
-      var facts = (m.core_facts || []).filter(function(f) { return f; });
-      var factsHtml = facts.length
-        ? '<ul>' + facts.map(function(f) { return '<li>' + escapeHtml(f) + '</li>'; }).join('') + '</ul>'
-        : '';
-
-      return '<div class="memory-card fade-in" style="animation-delay:' + (i*0.06) + 's">' +
+      return '<div class="memory-card fade-in" style="animation-delay:' + (i * 0.06) + 's">' +
         '<div class="card-header">' +
           '<div class="card-icon"></div>' +
           '<span class="card-title">' + escapeHtml(m.name) + '</span>' +
           (m.pinned ? '<span class="pinned-badge">pinned</span>' : '') +
-          (m.importance > 0 ? '<span class="importance-badge">★' + m.importance + '</span>' : '') +
+          (m.importance >= 8 ? '<span class="importance-badge">★' + m.importance + '</span>' : '') +
           '<span class="card-date">' + formatDate(m.date) + '</span>' +
         '</div>' +
-        '<div class="card-tags">' + (m.tags||[]).map(function(t) { return '<span class="card-tag">' + escapeHtml(t) + '</span>'; }).join('') + '</div>' +
-        '<div class="card-body">' +
-          (m.summary ? escapeHtml(m.summary) : '') +
-          factsHtml +
-        '</div>' +
+        '<div class="card-tags">' + (m.tags || []).map(function(t) { return '<span class="card-tag">' + escapeHtml(t) + '</span>'; }).join('') + '</div>' +
+        '<div class="card-body">' + escapeHtml(m.summary) + '</div>' +
         ((valenceBar || arousalBar) ? '<div class="card-emotion">' + valenceBar + arousalBar + '</div>' : '') +
       '</div>';
     }
@@ -425,30 +379,33 @@
     }
 
     function renderStats() {
-      if (!statsData) return;
-      var s = statsData;
-      var topTags = (s.top_tags || []).map(function(pair) {
-        return '<span class="card-tag">' + escapeHtml(pair[0]) + ' x' + pair[1] + '</span>';
-      }).join('');
+      var memories = allMemories;
+      var total = memories.length;
+      var pinned = memories.filter(function(m) { return m.pinned; }).length;
+      var vals = memories.filter(function(m) { return m.valence >= 0; }).map(function(m) { return m.valence; });
+      var avgValence = vals.length ? (vals.reduce(function(a, b) { return a + b; }, 0) / vals.length).toFixed(2) : '0';
 
-      var domainCards = Object.entries(s.domains || {}).map(function(pair) {
-        return '<span class="card-tag">' + escapeHtml(pair[0]) + ' x' + pair[1] + '</span>';
-      }).join('');
+      var tags = {};
+      memories.forEach(function(m) { (m.tags || []).forEach(function(t) { tags[t] = (tags[t] || 0) + 1; }); });
+      var topTags = Object.entries(tags).sort(function(a, b) { return b[1] - a[1]; }).slice(0, 10);
+
+      var domains = {};
+      memories.forEach(function(m) { var d = m.domain || '未分类'; domains[d] = (domains[d] || 0) + 1; });
 
       document.getElementById('content').innerHTML =
         '<div class="section-title">Statistics</div>' +
         '<div class="stats-grid">' +
-          '<div class="stat-card"><div class="stat-number">' + s.total + '</div><div class="stat-label">记忆总数</div></div>' +
-          '<div class="stat-card"><div class="stat-number">' + s.pinned + '</div><div class="stat-label">钉选</div></div>' +
-          '<div class="stat-card"><div class="stat-number">' + s.avg_valence + '</div><div class="stat-label">平均情感值</div></div>' +
+          '<div class="stat-card"><div class="stat-number">' + total + '</div><div class="stat-label">记忆总数</div></div>' +
+          '<div class="stat-card"><div class="stat-number">' + pinned + '</div><div class="stat-label">钉选</div></div>' +
+          '<div class="stat-card"><div class="stat-number">' + avgValence + '</div><div class="stat-label">平均情感值</div></div>' +
         '</div>' +
         '<div class="memory-card">' +
           '<div class="card-header"><div class="card-icon"></div><span class="card-title">热门标签</span></div>' +
-          '<div class="card-tags" style="margin-top:8px">' + topTags + '</div>' +
+          '<div class="card-tags" style="margin-top:8px">' + topTags.map(function(p) { return '<span class="card-tag">' + escapeHtml(p[0]) + ' x' + p[1] + '</span>'; }).join('') + '</div>' +
         '</div>' +
         '<div class="memory-card" style="margin-top:12px">' +
           '<div class="card-header"><div class="card-icon"></div><span class="card-title">领域分布</span></div>' +
-          '<div class="card-tags" style="margin-top:8px">' + domainCards + '</div>' +
+          '<div class="card-tags" style="margin-top:8px">' + Object.entries(domains).map(function(p) { return '<span class="card-tag">' + escapeHtml(p[0]) + ' x' + p[1] + '</span>'; }).join('') + '</div>' +
         '</div>';
     }
 
@@ -462,16 +419,12 @@
 
     function switchTab(tab) {
       currentTab = tab;
-      document.querySelectorAll('.nav-btn').forEach(function(b) {
-        b.classList.toggle('active', b.dataset.tab === tab);
-      });
-
+      document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === tab); });
       var searchBar = document.getElementById('searchBar');
       searchBar.style.display = (tab === 'memories') ? 'block' : 'none';
-
-      if (tab === 'stats') {
+      if (tab === 'stats' && allMemories.length) {
         document.getElementById('domainPills').innerHTML = '';
-        loadStats();
+        renderStats();
       } else {
         renderCurrentTab();
         buildDomainPills();
