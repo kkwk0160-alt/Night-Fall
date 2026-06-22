@@ -145,6 +145,21 @@
     .domain-pill { font-size: 11px; padding: 4px 12px; border: 1px solid var(--choco); border-radius: 12px; background: transparent; color: var(--choco-light); cursor: pointer; transition: all 0.3s; opacity: 0.6; }
     .domain-pill:hover, .domain-pill.active { background: var(--choco); color: var(--cream); opacity: 1; }
 
+    /* ════════ DIARY ════════ */
+    .diary-entry { background: var(--cream); border: 2px solid var(--choco); border-radius: 16px; padding: 0; margin-bottom: 22px; overflow: hidden; transition: transform 0.2s; }
+    .diary-entry:hover { transform: translateY(-2px); }
+    .diary-date-bar { background: var(--mint); padding: 12px 22px; border-bottom: 2px solid var(--choco); display: flex; align-items: center; gap: 10px; }
+    .diary-date-icon { font-size: 18px; opacity: 0.5; }
+    .diary-date-text { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--choco); }
+    .diary-date-weekday { font-family: 'Patrick Hand', cursive; font-size: 14px; color: var(--choco-light); opacity: 0.6; margin-left: auto; }
+    .diary-body { padding: 22px 28px; background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(92,61,46,0.08) 27px, rgba(92,61,46,0.08) 28px); background-position: 0 10px; min-height: 80px; }
+    .diary-body p { font-family: 'Noto Serif SC', serif; font-size: 14px; line-height: 28px; color: var(--choco); font-weight: 300; margin: 0; white-space: pre-wrap; }
+    .diary-mood { padding: 10px 22px 14px; display: flex; gap: 8px; align-items: center; border-top: 1px dashed rgba(92,61,46,0.15); }
+    .diary-mood-tag { font-size: 11px; padding: 2px 10px; border: 1px solid var(--choco); border-radius: 10px; color: var(--choco-light); opacity: 0.5; }
+    .diary-empty { text-align: center; padding: 60px 20px; }
+    .diary-empty p { color: var(--choco-light); font-size: 14px; margin-top: 12px; }
+    .diary-empty .hint { font-size: 12px; opacity: 0.4; margin-top: 8px; }
+
     .footer { text-align: center; padding: 28px 20px; position: relative; z-index: 1; }
     .footer-text { font-family: 'Patrick Hand', cursive; font-size: 13px; color: var(--choco-light); opacity: 0.4; letter-spacing: 2px; }
 
@@ -207,6 +222,7 @@
 
     <nav class="nav">
       <button class="nav-btn active" data-tab="memories">记忆</button>
+      <button class="nav-btn" data-tab="diary">日记</button>
       <button class="nav-btn" data-tab="pinned">钉选</button>
       <button class="nav-btn" data-tab="stats">统计</button>
     </nav>
@@ -378,6 +394,55 @@
         memories.map(function(m, i) { return renderMemoryCard(m, i); }).join('');
     }
 
+    function isDiaryEntry(m) {
+      var domainLower = (m.domain || '').toLowerCase();
+      var typeLower = (m.type || '').toLowerCase();
+      var tagsLower = (m.tags || []).map(function(t) { return t.toLowerCase(); });
+      return typeLower.indexOf('diary') >= 0 || domainLower.indexOf('日记') >= 0 ||
+        domainLower.indexOf('diary') >= 0 || tagsLower.indexOf('日记') >= 0 ||
+        tagsLower.indexOf('diary') >= 0 || domainLower.indexOf('journal') >= 0;
+    }
+
+    function getWeekday(dateStr) {
+      if (!dateStr) return '';
+      try {
+        var d = new Date(dateStr);
+        return ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+      } catch(e) { return ''; }
+    }
+
+    function renderDiary() {
+      var memories = getFilteredMemories().filter(isDiaryEntry);
+      memories.sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); });
+      var content = document.getElementById('content');
+
+      if (!memories.length) {
+        content.innerHTML = '<div class="diary-empty"><div style="font-size:36px;opacity:0.3">📖</div>' +
+          '<p>还没有日记呢</p>' +
+          '<p class="hint">顾屿会在这里写下每天的心情</p></div>';
+        return;
+      }
+
+      content.innerHTML = '<div class="section-title">Diary</div>' +
+        memories.map(function(m, i) {
+          var weekday = getWeekday(m.date);
+          var weekdayStr = weekday ? '星期' + weekday : '';
+          var moodTags = (m.tags || []).map(function(t) {
+            return '<span class="diary-mood-tag">' + escapeHtml(t) + '</span>';
+          }).join('');
+
+          return '<div class="diary-entry fade-in" style="animation-delay:' + (i * 0.08) + 's">' +
+            '<div class="diary-date-bar">' +
+              '<span class="diary-date-icon">📅</span>' +
+              '<span class="diary-date-text">' + formatDate(m.date) + '</span>' +
+              '<span class="diary-date-weekday">' + weekdayStr + '</span>' +
+            '</div>' +
+            '<div class="diary-body"><p>' + escapeHtml(m.summary || m.name) + '</p></div>' +
+            (moodTags ? '<div class="diary-mood">' + moodTags + '</div>' : '') +
+          '</div>';
+        }).join('');
+    }
+
     function renderStats() {
       var memories = allMemories;
       var total = memories.length;
@@ -412,6 +477,7 @@
     function renderCurrentTab() {
       switch (currentTab) {
         case 'memories': renderMemories(); break;
+        case 'diary': renderDiary(); break;
         case 'pinned': renderPinned(); break;
         case 'stats': renderStats(); break;
       }
@@ -422,7 +488,7 @@
       document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === tab); });
       var searchBar = document.getElementById('searchBar');
       searchBar.style.display = (tab === 'memories') ? 'block' : 'none';
-      if (tab === 'stats' && allMemories.length) {
+      if ((tab === 'stats' || tab === 'diary') && allMemories.length) {
         document.getElementById('domainPills').innerHTML = '';
         renderStats();
       } else {
