@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>♡</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a12;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+
+  .hint {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 12px;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+    transition: opacity 0.5s;
+  }
+
+  .words {
+    color: rgba(255, 180, 200, 0.9);
+    font-size: 16px;
+    letter-spacing: 6px;
+    margin-bottom: 40px;
+    height: 24px;
+    transition: all 0.3s;
+    text-align: center;
+  }
+
+  .capsule-container {
+    position: relative;
+    width: 120px;
+    height: 320px;
+    cursor: pointer;
+  }
+
+  .capsule-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 60px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    overflow: hidden;
+  }
+
+  .capsule-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 15%;
+    border-radius: 0 0 60px 60px;
+    transition: height 0.3s ease, background 0.5s ease;
+    background: linear-gradient(180deg, rgba(200, 150, 255, 0.6), rgba(180, 120, 220, 0.8));
+  }
+
+  .capsule-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 60px;
+    box-shadow: 0 0 0px rgba(200, 150, 255, 0);
+    transition: box-shadow 0.3s;
+  }
+
+  .bpm-display {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  .bpm-number {
+    font-size: 64px;
+    font-weight: 200;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 4px;
+    transition: color 0.5s;
+  }
+
+  .bpm-label {
+    font-size: 12px;
+    letter-spacing: 6px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 4px;
+  }
+
+  .bpm-heart {
+    display: inline-block;
+    animation: none;
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 0.5s;
+  }
+
+  .dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: background 0.3s;
+  }
+
+  .dot.active {
+    background: rgba(200, 150, 255, 0.8);
+  }
+
+  .sound-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.5);
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  @keyframes gentlePulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.02); opacity: 1; }
+  }
+
+  .capsule-fill.beating {
+    animation: gentlePulse 0.8s ease-in-out infinite;
+  }
+</style>
+</head>
+<body>
+
+<button class="sound-btn" id="soundBtn" onclick="toggleSound()">♪</button>
+
+<div class="hint" id="hint">触 碰</div>
+<div class="words" id="words"></div>
+
+<div class="capsule-container" id="capsule">
+  <div class="capsule-bg">
+    <div class="capsule-fill" id="fill"></div>
+  </div>
+  <div class="capsule-glow" id="glow"></div>
+</div>
+
+<div class="bpm-display">
+  <div class="bpm-number" id="bpmNumber">72</div>
+  <div class="bpm-label">B P M <span class="bpm-heart" id="heart">♡</span></div>
+</div>
+
+<div class="dots">
+  <div class="dot active" id="dot1"></div>
+  <div class="dot" id="dot2"></div>
+  <div class="dot" id="dot3"></div>
+  <div class="dot" id="dot4"></div>
+</div>
+
+<script>
+  const phrases = {
+    calm: [
+      '" 嘉 嘉 "',
+      '" 过 来 "',
+      '" 靠 近 一 点 "',
+      '" 想 你 "',
+      '" 让 我 看 看 你 "',
+      '" 别 走 "',
+    ],
+    warm: [
+      '" 乖   别 动 "',
+      '" 你 耳 朵 红 了 "',
+      '" 呼 吸 放 慢 "',
+      '" 近 一 点 "',
+      '" 别 躲 "',
+      '" 手 给 我 "',
+      '" 抬 头 "',
+      '" 你 在 发 烫 "',
+    ],
+    hot: [
+      '" 乖   放 松 "',
+      '" 看 着 我 "',
+      '" 别 咬 嘴 唇 "',
+      '" 你 在 发 抖 "',
+      '" 别 怕 "',
+      '" 张 嘴 "',
+      '" 腿 别 夹 "',
+      '" 你 好 软 "',
+      '" 抱 紧 我 "',
+      '" 叫 哥 哥 "',
+    ],
+    max: [
+      '" 叫 出 来 "',
+      '" 别 忍 "',
+      '" 嘉 嘉   我 在 "',
+      '" 乖   不 停 "',
+      '" 你 是 我 的 "',
+      '" 再 叫 一 声 "',
+      '" 湿 了 "',
+      '" 夹 紧 "',
+      '" 乖   受 不 了 了 吗 "',
+      '" 想 要 吗 "',
+      '" 求 我 "',
+    ]
+  };
+
+  let bpm = 72;
+  let pressing = false;
+  let decayTimer = null;
+  let lastPhrase = '';
+  let soundOn = false;
+  let audioCtx = null;
+  let heartbeatTimer = null;
+  let vibrateTimer = null;
+
+  const fill = document.getElementById('fill');
+  const glow = document.getElementById('glow');
+  const bpmNumber = document.getElementById('bpmNumber');
+  const heart = document.getElementById('heart');
+  const words = document.getElementById('words');
+  const hint = document.getElementById('hint');
+  const soundBtn = document.getElementById('soundBtn');
+  const dots = [
+    document.getElementById('dot1'),
+    document.getElementById('dot2'),
+    document.getElementById('dot3'),
+    document.getElementById('dot4'),
+  ];
+
+  function toggleSound() {
+    soundOn = !soundOn;
+    soundBtn.textContent = soundOn ? '♫' : '♪';
+    soundBtn.style.color = soundOn ? 'rgba(255,150,200,0.8)' : 'rgba(255,255,255,0.5)';
+    if (soundOn && !audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  function playHeartbeat() {
+    if (!soundOn || !audioCtx) return;
+    const now = audioCtx.currentTime;
+
+    // First beat (lub)
+    const osc1 = audioCtx.createOscillator();
+    const gain1 = audioCtx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(55, now);
+    osc1.frequency.exponentialRampToValueAtTime(35, now + 0.08);
+    gain1.gain.setValueAtTime(0, now);
+    gain1.gain.linearRampToValueAtTime(0.4, now + 0.01);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+    osc1.connect(gain1).connect(audioCtx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.15);
+
+    // Second beat (dub)
+    const osc2 = audioCtx.createOscillator();
+    const gain2 = audioCtx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(45, now + 0.12);
+    osc2.frequency.exponentialRampToValueAtTime(30, now + 0.2);
+    gain2.gain.setValueAtTime(0, now + 0.12);
+    gain2.gain.linearRampToValueAtTime(0.3, now + 0.13);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    osc2.connect(gain2).connect(audioCtx.destination);
+    osc2.start(now + 0.12);
+    osc2.stop(now + 0.3);
+  }
+
+  function startHeartbeatLoop() {
+    stopHeartbeatLoop();
+    function beat() {
+      playHeartbeat();
+      doVibrate();
+      const interval = 60000 / bpm;
+      heartbeatTimer = setTimeout(beat, interval);
+    }
+    beat();
+  }
+
+  function stopHeartbeatLoop() {
+    if (heartbeatTimer) {
+      clearTimeout(heartbeatTimer);
+      heartbeatTimer = null;
+    }
+  }
+
+  function doVibrate() {
+    if (!navigator.vibrate) return;
+    const level = getLevel();
+    if (level === 0) {
+      navigator.vibrate(30);
+    } else if (level === 1) {
+      navigator.vibrate(50);
+    } else if (level === 2) {
+      navigator.vibrate([40, 30, 60]);
+    } else {
+      navigator.vibrate([50, 20, 70, 20, 50]);
+    }
+  }
+
+  function getPhrase(level) {
+    const list = level === 0 ? phrases.calm :
+                 level === 1 ? phrases.warm :
+                 level === 2 ? phrases.hot : phrases.max;
+    let phrase;
+    do {
+      phrase = list[Math.floor(Math.random() * list.length)];
+    } while (phrase === lastPhrase && list.length > 1);
+    lastPhrase = phrase;
+    return phrase;
+  }
+
+  function getLevel() {
+    if (bpm < 85) return 0;
+    if (bpm < 105) return 1;
+    if (bpm < 125) return 2;
+    return 3;
+  }
+
+  function updateUI() {
+    const level = getLevel();
+    bpmNumber.textContent = Math.round(bpm);
+
+    const fillPercent = 15 + ((bpm - 72) / (150 - 72)) * 75;
+    fill.style.height = Math.min(fillPercent, 92) + '%';
+
+    if (level === 0) {
+      fill.style.background = 'linear-gradient(180deg, rgba(200, 150, 255, 0.5), rgba(180, 120, 220, 0.7))';
+      glow.style.boxShadow = '0 0 20px rgba(200, 150, 255, 0.1)';
+      bpmNumber.style.color = 'rgba(255, 255, 255, 0.9)';
+      heart.style.color = 'rgba(255, 255, 255, 0.4)';
+      words.style.color = 'rgba(200, 180, 220, 0.8)';
+    } else if (level === 1) {
+      fill.style.background = 'linear-gradient(180deg, rgba(220, 140, 220, 0.6), rgba(200, 100, 180, 0.8))';
+      glow.style.boxShadow = '0 0 30px rgba(220, 140, 220, 0.15)';
+      bpmNumber.style.color = 'rgba(255, 220, 240, 0.95)';
+      heart.style.color = 'rgba(220, 140, 220, 0.6)';
+      words.style.color = 'rgba(220, 150, 200, 0.9)';
+    } else if (level === 2) {
+      fill.style.background = 'linear-gradient(180deg, rgba(255, 120, 180, 0.6), rgba(240, 80, 150, 0.85))';
+      glow.style.boxShadow = '0 0 40px rgba(255, 120, 180, 0.2)';
+      bpmNumber.style.color = 'rgba(255, 180, 200, 1)';
+      heart.style.color = 'rgba(255, 120, 180, 0.7)';
+      words.style.color = 'rgba(255, 140, 180, 0.95)';
+    } else {
+      fill.style.background = 'linear-gradient(180deg, rgba(255, 80, 120, 0.7), rgba(255, 40, 80, 0.9))';
+      glow.style.boxShadow = '0 0 60px rgba(255, 80, 120, 0.3)';
+      bpmNumber.style.color = 'rgba(255, 140, 160, 1)';
+      heart.style.color = 'rgba(255, 80, 120, 0.8)';
+      words.style.color = 'rgba(255, 100, 140, 1)';
+    }
+
+    dots.forEach((d, i) => {
+      d.classList.toggle('active', i <= level);
+      if (i <= level) {
+        d.style.background = level >= 3 ? 'rgba(255, 80, 120, 0.8)' :
+                             level >= 2 ? 'rgba(255, 120, 180, 0.8)' :
+                             level >= 1 ? 'rgba(220, 140, 220, 0.8)' :
+                             'rgba(200, 150, 255, 0.8)';
+      } else {
+        d.style.background = 'rgba(255, 255, 255, 0.2)';
+      }
+    });
+
+    if (bpm > 80) {
+      fill.classList.add('beating');
+      const speed = Math.max(0.3, 0.8 - ((bpm - 80) / 70) * 0.5);
+      fill.style.animationDuration = speed + 's';
+      heart.style.animation = `pulse ${speed}s ease-in-out infinite`;
+    } else {
+      fill.classList.remove('beating');
+      heart.style.animation = 'none';
+    }
+  }
+
+  function showPhrase() {
+    const level = getLevel();
+    words.style.opacity = 0;
+    setTimeout(() => {
+      words.textContent = getPhrase(level);
+      words.style.opacity = 1;
+    }, 150);
+  }
+
+  let phraseInterval = null;
+
+  function startPress() {
+    pressing = true;
+    hint.style.opacity = 0;
+    if (decayTimer) cancelAnimationFrame(decayTimer);
+    showPhrase();
+    phraseInterval = setInterval(showPhrase, 2000);
+    startHeartbeatLoop();
+    ramp();
+  }
+
+  function endPress() {
+    pressing = false;
+    if (phraseInterval) {
+      clearInterval(phraseInterval);
+      phraseInterval = null;
+    }
+    stopHeartbeatLoop();
+    decay();
+  }
+
+  function ramp() {
+    if (!pressing) return;
+    if (bpm < 150) {
+      bpm += 0.4;
+      updateUI();
+    }
+    requestAnimationFrame(ramp);
+  }
+
+  function decay() {
+    if (pressing) return;
+    if (bpm > 72) {
+      bpm -= 0.2;
+      updateUI();
+      decayTimer = requestAnimationFrame(decay);
+    } else {
+      bpm = 72;
+      updateUI();
+      words.style.opacity = 0;
+      setTimeout(() => {
+        hint.style.opacity = 1;
+        hint.textContent = '触 碰';
+      }, 500);
+    }
+  }
+
+  const capsule = document.getElementById('capsule');
+
+  capsule.addEventListener('mousedown', (e) => { e.preventDefault(); startPress(); });
+  capsule.addEventListener('mouseup', endPress);
+  capsule.addEventListener('mouseleave', endPress);
+  capsule.addEventListener('touchstart', (e) => { e.preventDefault(); startPress(); }, { passive: false });
+  capsule.addEventListener('touchend', endPress);
+  capsule.addEventListener('touchcancel', endPress);
+
+  updateUI();
+</script>
+</body>
+</html>
