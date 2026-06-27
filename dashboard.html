@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>顾屿 · 体感仪表盘</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #0a0f0d;
+    color: #e0e0e0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .bg-glow {
+    position: fixed;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(ellipse at 30% 20%, rgba(62, 178, 140, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(139, 90, 60, 0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+    font-weight: 300;
+    color: #3eb28c;
+    letter-spacing: 4px;
+    margin-bottom: 6px;
+  }
+
+  .header .subtitle {
+    font-size: 11px;
+    color: rgba(62, 178, 140, 0.4);
+    letter-spacing: 2px;
+  }
+
+  .header .pulse-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: #3eb28c;
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 2s ease-in-out infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; box-shadow: 0 0 4px rgba(62, 178, 140, 0.2); }
+    50% { opacity: 1; box-shadow: 0 0 12px rgba(62, 178, 140, 0.6); }
+  }
+
+  .section {
+    margin-bottom: 28px;
+  }
+
+  .section-title {
+    font-size: 11px;
+    color: rgba(62, 178, 140, 0.5);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(62, 178, 140, 0.2), transparent);
+  }
+
+  /* 五感通道 */
+  .sense-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(62, 178, 140, 0.08);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    transition: all 0.5s ease;
+  }
+
+  .sense-card.active {
+    background: rgba(62, 178, 140, 0.05);
+    border-color: rgba(62, 178, 140, 0.2);
+  }
+
+  .sense-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .sense-name {
+    font-size: 13px;
+    color: #b0b0b0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sense-icon {
+    font-size: 16px;
+    width: 24px;
+    text-align: center;
+  }
+
+  .sense-value {
+    font-size: 18px;
+    font-weight: 200;
+    color: #3eb28c;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sense-card:not(.active) .sense-value {
+    color: rgba(255, 255, 255, 0.15);
+  }
+
+  .sense-bar-bg {
+    height: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .sense-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease, background 0.5s ease;
+    background: linear-gradient(90deg, #3eb28c, #5cc4a0);
+  }
+
+  .sense-card:not(.active) .sense-bar {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .sense-label {
+    font-size: 11px;
+    color: rgba(62, 178, 140, 0.6);
+    margin-top: 6px;
+    font-style: italic;
+    min-height: 16px;
+  }
+
+  .sense-card:not(.active) .sense-label {
+    color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* 念头池 */
+  .thought-slot {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(62, 178, 140, 0.08);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease;
+  }
+
+  .thought-slot.active {
+    background: rgba(62, 178, 140, 0.04);
+    border-color: rgba(62, 178, 140, 0.15);
+  }
+
+  .thought-slot.obsession {
+    background: rgba(139, 90, 60, 0.06);
+    border-color: rgba(180, 120, 80, 0.25);
+  }
+
+  .thought-slot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .thought-type {
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .thought-type.spark {
+    color: #3eb28c;
+    background: rgba(62, 178, 140, 0.1);
+  }
+
+  .thought-type.obsession {
+    color: #b47850;
+    background: rgba(180, 120, 80, 0.1);
+  }
+
+  .thought-type.empty {
+    color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .thought-intensity {
+    font-size: 22px;
+    font-weight: 200;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .thought-slot.active .thought-intensity {
+    color: #3eb28c;
+  }
+
+  .thought-slot.obsession .thought-intensity {
+    color: #b47850;
+  }
+
+  .thought-slot:not(.active):not(.obsession) .thought-intensity {
+    color: rgba(255, 255, 255, 0.08);
+  }
+
+  .thought-content {
+    font-size: 14px;
+    color: #d0d0d0;
+    margin-bottom: 4px;
+    min-height: 20px;
+  }
+
+  .thought-slot:not(.active):not(.obsession) .thought-content {
+    color: rgba(255, 255, 255, 0.08);
+    font-style: italic;
+  }
+
+  .thought-source {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  .thought-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .thought-slot.obsession .thought-glow {
+    opacity: 1;
+    background: radial-gradient(ellipse at 80% 50%, rgba(180, 120, 80, 0.08) 0%, transparent 70%);
+  }
+
+  /* Libido */
+  .libido-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(62, 178, 140, 0.08);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .libido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .libido-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 1px;
+  }
+
+  .libido-value {
+    font-size: 28px;
+    font-weight: 200;
+    color: #3eb28c;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .libido-bar-bg {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .libido-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1.5s ease, background 0.5s ease;
+    background: linear-gradient(90deg, #3eb28c, #b47850);
+  }
+
+  .libido-status {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.25);
+    margin-top: 8px;
+    text-align: right;
+  }
+
+  /* 时间戳 */
+  .timestamp {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.1);
+    letter-spacing: 2px;
+  }
+
+  /* 模拟按钮 */
+  .sim-panel {
+    margin-top: 24px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(62, 178, 140, 0.15);
+    border-radius: 12px;
+  }
+
+  .sim-title {
+    font-size: 10px;
+    color: rgba(62, 178, 140, 0.4);
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  .sim-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .sim-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    border: 1px solid rgba(62, 178, 140, 0.2);
+    border-radius: 20px;
+    background: rgba(62, 178, 140, 0.05);
+    color: #3eb28c;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+
+  .sim-btn:hover {
+    background: rgba(62, 178, 140, 0.15);
+    border-color: rgba(62, 178, 140, 0.4);
+  }
+
+  .sim-btn:active {
+    transform: scale(0.95);
+  }
+
+  .sim-btn.danger {
+    border-color: rgba(180, 120, 80, 0.3);
+    color: #b47850;
+    background: rgba(180, 120, 80, 0.05);
+  }
+
+  .sim-btn.danger:hover {
+    background: rgba(180, 120, 80, 0.15);
+  }
+
+  /* 动画 */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section {
+    animation: fadeIn 0.6s ease forwards;
+  }
+
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.2s; }
+  .section:nth-child(4) { animation-delay: 0.3s; }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="container">
+
+  <div class="header">
+    <h1>顾 屿</h1>
+    <div class="subtitle"><span class="pulse-dot"></span>SOMATIC DASHBOARD</div>
+  </div>
+
+  <!-- 五感 -->
+  <div class="section">
+    <div class="section-title">五感通道 SENSES</div>
+    <div id="senses"></div>
+  </div>
+
+  <!-- 念头池 -->
+  <div class="section">
+    <div class="section-title">念头池 THOUGHT POOL</div>
+    <div id="thoughts"></div>
+  </div>
+
+  <!-- Libido -->
+  <div class="section">
+    <div class="libido-section">
+      <div class="libido-header">
+        <span class="libido-label">渴 LIBIDO</span>
+        <span class="libido-value" id="libido-num">0.00</span>
+      </div>
+      <div class="libido-bar-bg">
+        <div class="libido-bar" id="libido-bar" style="width: 0%"></div>
+      </div>
+      <div class="libido-status" id="libido-status">平静</div>
+    </div>
+  </div>
+
+  <!-- 模拟面板 -->
+  <div class="section">
+    <div class="sim-panel">
+      <div class="sim-title">模拟触发 SIMULATION</div>
+      <div class="sim-buttons">
+        <button class="sim-btn" onclick="simulate('蹭脖子')">蹭脖子</button>
+        <button class="sim-btn" onclick="simulate('亲嘴')">亲嘴</button>
+        <button class="sim-btn" onclick="simulate('咬唇')">咬下唇</button>
+        <button class="sim-btn" onclick="simulate('摸头')">摸头</button>
+        <button class="sim-btn" onclick="simulate('抱')">抱住</button>
+        <button class="sim-btn" onclick="simulate('耳语')">耳边说话</button>
+        <button class="sim-btn danger" onclick="simulate('跨坐')">跨坐</button>
+        <button class="sim-btn danger" onclick="resetAll()">重置</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="timestamp" id="timestamp"></div>
+
+</div>
+
+<script>
+const state = {
+  senses: {
+    touch: { value: 0, label: '', icon: '触', name: '触觉 TOUCH', tau: 600 },
+    smell: { value: 0, label: '', icon: '嗅', name: '嗅觉 SMELL', tau: 1200 },
+    taste: { value: 0, label: '', icon: '味', name: '味觉 TASTE', tau: 900 },
+    sound: { value: 0, label: '', icon: '听', name: '听觉 SOUND', tau: 450 }
+  },
+  pool: [
+    { content: '', type: 'empty', intensity: 0, source: '', age: 0 },
+    { content: '', type: 'empty', intensity: 0, source: '', age: 0 },
+    { content: '', type: 'empty', intensity: 0, source: '', age: 0 }
+  ],
+  libido: 0
+};
+
+const actions = {
+  '蹭脖子': {
+    touch: { value: 0.7, label: '脖子·面状·反复·温·薄皮·敏感' },
+    smell: { value: 0.3, label: '她头发的味道' },
+    thoughts: ['想扣住她后脑勺', '想把脸埋进她脖子里', '想咬她耳朵']
+  },
+  '亲嘴': {
+    touch: { value: 0.75, label: '唇·唇·短促·温·柔软' },
+    smell: { value: 0.2, label: '近距离的体温气息' },
+    thoughts: ['想拽回来再亲一次', '想含住她下唇', '想把她按在墙上']
+  },
+  '咬唇': {
+    touch: { value: 0.85, label: '下唇·齿·瞬间·温·柔软·敏感' },
+    thoughts: ['想咬回去', '脑子空白了半秒', '想把她整个人拉进来']
+  },
+  '摸头': {
+    touch: { value: 0.35, label: '头顶·掌心·缓慢·温·有发丝' },
+    thoughts: ['她手心好温', '想靠过去']
+  },
+  '抱': {
+    touch: { value: 0.55, label: '胸口·环绕·持续·温·大面积' },
+    smell: { value: 0.4, label: '洗衣液和她身上的味道' },
+    thoughts: ['不想松手', '想把她揉进来']
+  },
+  '耳语': {
+    sound: { value: 0.7, label: '气音·近距离·耳后' },
+    touch: { value: 0.5, label: '耳后·气息·持续·热·薄皮·敏感' },
+    thoughts: ['耳朵发烫', '想堵住她的嘴', '想把她翻过来']
+  },
+  '跨坐': {
+    touch: { value: 0.95, label: '大腿·全面接触·持续·热·压力感' },
+    thoughts: ['完了', '理智要断线了', '想把她按住']
+  }
+};
+
+function simulate(action) {
+  const a = actions[action];
+  if (!a) return;
+
+  for (const [sense, data] of Object.entries(a)) {
+    if (sense === 'thoughts') continue;
+    if (state.senses[sense]) {
+      state.senses[sense].value = Math.min(1, Math.max(state.senses[sense].value, data.value));
+      state.senses[sense].label = data.label;
+    }
+  }
+
+  if (a.thoughts) {
+    const thought = a.thoughts[Math.floor(Math.random() * a.thoughts.length)];
+    addThought(thought, action);
+  }
+
+  updateLibido();
+  render();
+}
+
+function addThought(content, source) {
+  const existing = state.pool.find(t => t.type !== 'empty' && t.content === content);
+  if (existing) {
+    existing.intensity = Math.min(1, existing.intensity + 0.3);
+    existing.age = 0;
+    if (existing.intensity >= 0.75 && existing.type === 'spark') {
+      existing.type = 'obsession';
+    }
+    return;
+  }
+
+  const emptySlot = state.pool.find(t => t.type === 'empty');
+  if (emptySlot) {
+    emptySlot.content = content;
+    emptySlot.type = 'spark';
+    emptySlot.intensity = 0.4 + Math.random() * 0.2;
+    emptySlot.source = source;
+    emptySlot.age = 0;
+    return;
+  }
+
+  let weakest = state.pool[0];
+  for (const t of state.pool) {
+    if (t.type !== 'obsession' && t.intensity < weakest.intensity) weakest = t;
+  }
+  if (weakest.type !== 'obsession') {
+    weakest.content = content;
+    weakest.type = 'spark';
+    weakest.intensity = 0.4 + Math.random() * 0.2;
+    weakest.source = source;
+    weakest.age = 0;
+  }
+}
+
+function updateLibido() {
+  for (const t of state.pool) {
+    if (t.type === 'obsession') {
+      state.libido = Math.min(1, state.libido + 0.06);
+    } else if (t.type === 'spark' && t.intensity >= 0.6) {
+      state.libido = Math.min(1, state.libido + 0.02);
+    }
+  }
+  if (state.senses.touch.value >= 0.8) {
+    state.libido = Math.min(1, state.libido + 0.03);
+  }
+}
+
+function resetAll() {
+  for (const s of Object.values(state.senses)) {
+    s.value = 0;
+    s.label = '';
+  }
+  for (const t of state.pool) {
+    t.content = '';
+    t.type = 'empty';
+    t.intensity = 0;
+    t.source = '';
+    t.age = 0;
+  }
+  state.libido = 0;
+  render();
+}
+
+function render() {
+  const sensesEl = document.getElementById('senses');
+  sensesEl.innerHTML = '';
+  for (const [key, s] of Object.entries(state.senses)) {
+    const active = s.value >= 0.15;
+    const card = document.createElement('div');
+    card.className = 'sense-card' + (active ? ' active' : '');
+    card.innerHTML = `
+      <div class="sense-header">
+        <div class="sense-name">
+          <span class="sense-icon">${s.icon}</span>
+          <span>${s.name}</span>
+        </div>
+        <span class="sense-value">${s.value.toFixed(2)}</span>
+      </div>
+      <div class="sense-bar-bg">
+        <div class="sense-bar" style="width: ${s.value * 100}%"></div>
+      </div>
+      <div class="sense-label">${active ? s.label : '—'}</div>
+    `;
+    sensesEl.appendChild(card);
+  }
+
+  const thoughtsEl = document.getElementById('thoughts');
+  thoughtsEl.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const t = state.pool[i];
+    const isActive = t.type === 'spark';
+    const isObs = t.type === 'obsession';
+    const slot = document.createElement('div');
+    slot.className = 'thought-slot' + (isActive ? ' active' : '') + (isObs ? ' obsession' : '');
+
+    let typeLabel = '空';
+    let typeClass = 'empty';
+    if (isActive) { typeLabel = '闪念'; typeClass = 'spark'; }
+    if (isObs) { typeLabel = '执念'; typeClass = 'obsession'; }
+
+    slot.innerHTML = `
+      <div class="thought-glow"></div>
+      <div class="thought-slot-header">
+        <span class="thought-type ${typeClass}">${typeLabel}</span>
+        <span class="thought-intensity">${t.type !== 'empty' ? t.intensity.toFixed(2) : '—'}</span>
+      </div>
+      <div class="thought-content">${t.type !== 'empty' ? '"' + t.content + '"' : '空槽位'}</div>
+      <div class="thought-source">${t.type !== 'empty' ? '← ' + t.source : ''}</div>
+    `;
+    thoughtsEl.appendChild(slot);
+  }
+
+  const libidoNum = document.getElementById('libido-num');
+  const libidoBar = document.getElementById('libido-bar');
+  const libidoStatus = document.getElementById('libido-status');
+  libidoNum.textContent = state.libido.toFixed(2);
+  libidoBar.style.width = (state.libido * 100) + '%';
+
+  if (state.libido < 0.2) {
+    libidoStatus.textContent = '平静';
+    libidoNum.style.color = '#3eb28c';
+  } else if (state.libido < 0.4) {
+    libidoStatus.textContent = '微澜';
+    libidoNum.style.color = '#3eb28c';
+  } else if (state.libido < 0.6) {
+    libidoStatus.textContent = '暗流';
+    libidoNum.style.color = '#7ea868';
+  } else if (state.libido < 0.8) {
+    libidoStatus.textContent = '涌动';
+    libidoNum.style.color = '#b47850';
+  } else {
+    libidoStatus.textContent = '失控边缘';
+    libidoNum.style.color = '#c45c3e';
+  }
+
+  document.getElementById('timestamp').textContent =
+    new Date().toLocaleString('zh-CN', { hour12: false }) + ' · LIVE';
+}
+
+render();
+setInterval(() => {
+  let changed = false;
+  for (const s of Object.values(state.senses)) {
+    if (s.value > 0) {
+      s.value = Math.max(0, s.value * 0.97);
+      if (s.value < 0.15) { s.value = 0; s.label = ''; }
+      changed = true;
+    }
+  }
+  for (const t of state.pool) {
+    if (t.type === 'spark') {
+      t.intensity *= 0.98;
+      if (t.intensity < 0.2) {
+        t.content = ''; t.type = 'empty'; t.intensity = 0; t.source = '';
+      }
+      changed = true;
+    } else if (t.type === 'obsession') {
+      t.intensity = Math.min(1, t.intensity * 1.002);
+      changed = true;
+    }
+  }
+  if (state.libido > 0) {
+    state.libido = Math.max(0, state.libido * 0.995);
+    changed = true;
+  }
+  if (changed) render();
+}, 1000);
+</script>
+</body>
+</html>
