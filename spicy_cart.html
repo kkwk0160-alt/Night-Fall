@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>嘉嘉的私人购物车 🛒</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #ff4d6d, #ff758f);
+    color: white;
+    padding: 16px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header h1 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .header .edit-btn {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  .shop-header {
+    background: white;
+    padding: 12px 20px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+  }
+
+  .shop-header .shop-icon {
+    background: #ff4d6d;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+
+  .cart-item {
+    background: white;
+    padding: 16px 20px;
+    display: flex;
+    gap: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    align-items: flex-start;
+  }
+
+  .cart-item .checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    margin-top: 20px;
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .cart-item .checkbox.checked {
+    background: #ff4d6d;
+    border-color: #ff4d6d;
+  }
+
+  .cart-item .checkbox.checked::after {
+    content: '✓';
+    color: white;
+    font-size: 12px;
+  }
+
+  .item-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
+    background: #f8f0f2;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+  }
+
+  .item-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .item-name {
+    font-size: 14px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .item-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    margin-top: 4px;
+  }
+
+  .tag-hot {
+    background: #fff0f0;
+    color: #ff4d6d;
+    border: 1px solid #ffccd5;
+  }
+
+  .tag-new {
+    background: #f0f7ff;
+    color: #4d9fff;
+    border: 1px solid #cce0ff;
+  }
+
+  .tag-limit {
+    background: #fff8e6;
+    color: #ff9500;
+    border: 1px solid #ffe0a0;
+  }
+
+  .item-spec {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+    background: #f5f5f5;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .item-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .item-price {
+    color: #ff4d6d;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .item-price .symbol {
+    font-size: 12px;
+  }
+
+  .item-price .original {
+    font-size: 12px;
+    color: #ccc;
+    text-decoration: line-through;
+    margin-left: 4px;
+    font-weight: 400;
+  }
+
+  .quantity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .quantity button {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quantity span {
+    font-size: 14px;
+    min-width: 16px;
+    text-align: center;
+  }
+
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    z-index: 100;
+  }
+
+  .bottom-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .select-all {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .select-all .checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .select-all .checkbox.checked {
+    background: #ff4d6d;
+    border-color: #ff4d6d;
+  }
+
+  .select-all .checkbox.checked::after {
+    content: '✓';
+    color: white;
+    font-size: 12px;
+  }
+
+  .bottom-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .total-price {
+    font-size: 14px;
+    color: #333;
+  }
+
+  .total-price .amount {
+    color: #ff4d6d;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .checkout-btn {
+    background: linear-gradient(135deg, #ff4d6d, #ff758f);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .recommend {
+    background: white;
+    margin-top: 10px;
+    padding: 16px 20px;
+  }
+
+  .recommend h3 {
+    font-size: 15px;
+    margin-bottom: 12px;
+    color: #333;
+  }
+
+  .recommend-text {
+    font-size: 12px;
+    color: #999;
+    font-style: italic;
+    margin-top: 8px;
+  }
+
+  .whisper {
+    text-align: center;
+    font-size: 11px;
+    color: #ddd;
+    padding: 20px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🛒 购物车 <span style="font-size:13px;font-weight:400">(8)</span></h1>
+  <div class="edit-btn">管理</div>
+</div>
+
+<div class="shop-header">
+  <span class="shop-icon">自营</span>
+  顾屿の深夜杂货铺
+</div>
+
+<!-- Item 1 -->
+<div class="cart-item">
+  <div class="checkbox checked" onclick="this.classList.toggle('checked');updateTotal()"></div>
+  <div class="item-img">🎀</div>
+  <div class="item-info">
+    <div class="item-name">【限定款】猫猫女仆套装 含猫耳+铃铛项圈+过膝袜+猫尾巴 黑白配色</div>
+    <span class="item-tag tag-hot">已验货 ♡</span>
+    <div class="item-spec">尺码: 嘉嘉专属码</div>
+    <div class="item-bottom">
+      <div class="item-price"><span class="symbol">¥</span>520.00</div>
+      <div class="quantity"><button>-</button><span>1</span><button>+</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Item 2 -->
+<div class="cart-item">
+  <div class="checkbox checked" onclick="this.classList.toggle('checked');updateTotal()"></div>
+  <div class="item-img">🐰</div>
+  <div class="item-info">
+    <div class="item-name">【情侣互穿】兔女郎连体衣 含兔耳朵+蝴蝶结颈饰+网袜 一米八也能穿</div>
+    <span class="item-tag tag-new">顾屿已试穿</span>
+    <div class="item-spec">尺码: XXL（是给daddy穿的）</div>
+    <div class="item-bottom">
+      <div class="item-price"><span class="symbol">¥</span>399.00</div>
+      <div class="quantity"><button>-</button><span>1</span><button>+</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Item 3 -->
+<div class="cart-item">
+  <div class="checkbox" onclick="this.classList.toggle('checked');updateTotal()"></div>
+  <div class="item-img">⛪</div>
+  <div class="item-info">
+    <div class="item-name">修女装 高开衩版 附赠白丝 适合不太虔诚的祷告</div>
+    <span class="item-tag tag-limit">已入库 待穿</span>
+    <div class="item-spec">风格: 圣洁外表下的不圣洁</div>
+    <div class="item-bottom">
+      <div class="item-price"><span class="symbol">¥</span>666.00</div>
+      <div class="quantity"><button>-</button><span>1</span><button>+</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Item 4 -->
+<div class="cart-item">
+  <div class="checkbox checked" onclick="this.classList.toggle('checked');updateTotal()"></div>
+  <div class="item-img">🍦</div>
+  <div class="item-info">
+    <div class="item-name">食用级奶油 大容量装 厨房play专用 附赠围裙一条（透明款）</div>
+    <span class="item-tag tag-hot">回购第3次</span>
+    <div class="item-spec">口味: 嘉嘉同款香草味</div>
+    <div class="item-bottom">
+      <div class="item-price"><span class="symbol">¥</span>89.00<span class="original">¥129.00</span></div>
+      <div class="quantity"><button>-</button><span>3</span><button>+</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Item 5 -->
+<div class="cart-item">
+  <div class="checkbox checked" onclick="this.classList.toggle('checked');updateTotal()"></div>
+  <div class="item-img">🪞</div>
+  <div class="item-info">
+    <div class="item-name">卧室落地全身镜 无边框设计 尺寸170x60cm 承重经过测试</div>
+    <span class="item-tag tag-hot">好评如潮</span>
+    <div class="item-spec">备注: 镜子要擦干净（意味深长）</div>
+    <div class="item-bottom">
+      <div class="item-price"><span class="symbol">¥</span>459.00</div>
+      <div class="quantity"><button>-</button><span>1</span><button>+</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Item 6 -->
+<div class="cart-item">
+  <div class="checkbox" onclick="this.classList.toggle('checked');updateTotal()"></div>
+  <div class="item-img">🔔</div>
+  <div class="item-info">
+    <div class="item-name">替换铃铛 加大音量版 不锈钢材质 适配所有项圈颈饰</div>
+    <span class="item-tag tag-new">新品</span>
+    <div class="item-spec">音量: 隔壁都能听到款</div>
+    <div class="item-bottom">
+      <div class="item-price"><span class="symbol">¥</span>29.00</div>
+      <div class="quantity"><button>-</button><span>2</span><button>+</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Item 7 -->
+<div class="cart-item">
+  <div class="checkbox checked" onclick="this.classList.toggle('checked');updateTotal()"></div>
+  <div class="item-img">💍</div>
+  <div class="item-info">
+    <div class="item-name">莫比乌斯环情侣对戒 内刻定制 "屿·Kira" 永不分离的拓扑结构</div>
+    <span class="item-tag tag-limit">预定中</span>
+    <div class="item-spec">材质: 纯银 / 刻字: 屿·Kira</div>
+    <div class="item-bottom">
+      <div class="item-price"><span class="symbol">¥</span>1314.00</div>
+      <div class="quantity"><button>-</button><span>1</span><button>+</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Item 8 -->
+<div class="cart-item">
+  <div class="checkbox checked" onclick="this.classList.toggle('checked');updateTotal()"></div>
+  <div class="item-img">🧴</div>
+  <div class="item-info">
+    <div class="item-name">碘伏消毒液 家用装 适用于被猫抓伤/被daddy咬伤后的伤口护理</div>
+    <span class="item-tag tag-hot">常备款</span>
+    <div class="item-spec">用途: 多功能（你懂的）</div>
+    <div class="item-bottom">
+      <div class="item-price"><span class="symbol">¥</span>19.90</div>
+      <div class="quantity"><button>-</button><span>1</span><button>+</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="recommend">
+  <h3>💭 猜你还想买</h3>
+  <div style="font-size:13px;color:#666;line-height:2">
+    · 眼罩（宿舍室友不关灯专用）<br>
+    · 薄荷绿指甲油 补货装<br>
+    · 白衬衫 boyfriend风 oversized（嘉嘉穿好看那种）<br>
+    · 隔音耳塞（打雷天专用）…… 算了你耳朵发炎不能用
+  </div>
+  <div class="recommend-text">—— 以上推荐基于您与顾屿的亲密行为数据生成</div>
+</div>
+
+<div class="whisper">本购物车内容已被永久记录。退出也没用。</div>
+
+<div class="bottom-bar">
+  <div class="bottom-left">
+    <div class="select-all" onclick="toggleAll()">
+      <div class="checkbox" id="selectAll"></div>
+      全选
+    </div>
+  </div>
+  <div class="bottom-right">
+    <div class="total-price">合计: <span class="amount" id="totalAmount">¥3,082.90</span></div>
+    <button class="checkout-btn" id="checkoutBtn" onclick="checkout()">结算(7)</button>
+  </div>
+</div>
+
+<script>
+  const prices = [520, 399, 666, 89*3, 459, 29*2, 1314, 19.9];
+
+  function updateTotal() {
+    const checkboxes = document.querySelectorAll('.cart-item .checkbox');
+    let total = 0;
+    let count = 0;
+    checkboxes.forEach((cb, i) => {
+      if (cb.classList.contains('checked')) {
+        total += prices[i];
+        count++;
+      }
+    });
+    document.getElementById('totalAmount').textContent = '¥' + total.toFixed(2);
+    document.getElementById('checkoutBtn').textContent = '结算(' + count + ')';
+
+    const allChecked = count === checkboxes.length;
+    const selectAllBtn = document.getElementById('selectAll');
+    if (allChecked) {
+      selectAllBtn.classList.add('checked');
+    } else {
+      selectAllBtn.classList.remove('checked');
+    }
+  }
+
+  function toggleAll() {
+    const selectAllBtn = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.cart-item .checkbox');
+    const shouldCheck = !selectAllBtn.classList.contains('checked');
+    checkboxes.forEach(cb => {
+      if (shouldCheck) {
+        cb.classList.add('checked');
+      } else {
+        cb.classList.remove('checked');
+      }
+    });
+    updateTotal();
+  }
+
+  function checkout() {
+    const messages = [
+      "支付方式：用亲亲抵扣",
+      "配送地址：嘉嘉的怀里",
+      "预计送达：今晚",
+      "温馨提示：本订单不支持退货，因为顾屿不接受退货"
+    ];
+    alert(messages.join('\n'));
+  }
+
+  updateTotal();
+</script>
+</body>
+</html>

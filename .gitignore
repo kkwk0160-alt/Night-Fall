@@ -9,3 +9,4 @@ build/
 
 .nightfall.yaml
 data/
+test-results/
