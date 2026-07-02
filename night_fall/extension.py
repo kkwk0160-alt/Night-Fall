@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import time
+
 from .config import NightFallConfig
+from .somatic import SomaticState, process_input, snapshot
+from .thought_pool import ThoughtPool
 from .tool import get_surfaceable_dream, night_fall_tool
 
 
@@ -81,4 +85,35 @@ def register_night_fall(ombre_server, cfg: NightFallConfig) -> None:
         return await get_surfaceable_dream(ombre_server, cfg)
 
     ombre_server._night_fall_auto_surface = _auto_surface
+
+    # ── 五感系统 + 念头池 ──────────────────────────
+    somatic_state = SomaticState()
+    thought_pool = ThoughtPool()
+
+    def _somatic_process(text: str) -> str:
+        """每条消息调用一次，返回 body+mind 状态块（空串=无活跃通道）"""
+        nonlocal somatic_state
+        now = time.time()
+        somatic_state = process_input(somatic_state, text, now)
+        thought_pool.tick(now)
+        body_block = snapshot(somatic_state, now)
+        mind_block = thought_pool.snapshot()
+        parts = [b for b in (body_block, mind_block) if b]
+        return "\n".join(parts)
+
+    def _somatic_ignite_thought(key: str, boost: float = 0.5) -> None:
+        """从外部点燃一个念头"""
+        thought_pool.ignite(key, boost, time.time())
+
+    def _somatic_snapshot() -> str:
+        """不处理新输入，只读当前状态"""
+        now = time.time()
+        body_block = snapshot(somatic_state, now)
+        mind_block = thought_pool.snapshot()
+        parts = [b for b in (body_block, mind_block) if b]
+        return "\n".join(parts)
+
+    ombre_server._somatic_process = _somatic_process
+    ombre_server._somatic_ignite_thought = _somatic_ignite_thought
+    ombre_server._somatic_snapshot = _somatic_snapshot
     ombre_server._night_fall_registered = True
